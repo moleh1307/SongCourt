@@ -39,3 +39,7 @@ Splash -> Onboarding -> Connect / Preview Demo Trial -> Loading -> Verdict -> Sh
 ```
 
 Real Spotify OAuth and backend APIs are intentionally not implemented yet. Service boundaries exist under `src/services/` so they can be replaced later without rewriting screens.
+
+## Backend Hooks
+
+Future API endpoints are stubbed in [src/services/apiClient.ts](src/services/apiClient.ts). Set `EXPO_PUBLIC_API_BASE_URL` when a backend exists.
