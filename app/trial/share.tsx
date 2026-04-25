@@ -16,7 +16,7 @@ import type { ShareCardStyle } from '../../src/types/verdict';
 
 export default function ShareScreen() {
   const cardRef = useRef<RNView>(null);
-  const [styleName] = useState<ShareCardStyle>('neon');
+  const [styleName, setStyleName] = useState<ShareCardStyle>('neon');
   const currentVerdict = useTrialStore((state) => state.currentVerdict);
   const todayVerdict = useHistoryStore((state) => state.getTodayVerdict());
   const verdict = currentVerdict ?? todayVerdict;
@@ -57,7 +57,7 @@ export default function ShareScreen() {
   return (
     <Screen>
       <SectionHeader eyebrow="CREATE SHARE CARD" title="Choose your evidence." />
-      <ShareCardCarousel verdict={verdict} activeStyle={styleName} cardRef={cardRef} />
+      <ShareCardCarousel verdict={verdict} activeStyle={styleName} onStyleChange={setStyleName} cardRef={cardRef} />
       <CourtCard accent={colors.hotPink}>
         <Text style={styles.caption}>{verdict.shareCaption}</Text>
       </CourtCard>
