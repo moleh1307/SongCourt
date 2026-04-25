@@ -32,6 +32,16 @@ npx expo export --platform ios --output-dir dist-test
 rm -rf dist-test
 ```
 
+## iOS Builds
+
+```bash
+npx eas-cli build --platform ios --profile simulator
+npx eas-cli build --platform ios --profile preview
+npx eas-cli build --platform ios --profile production
+```
+
+Use `simulator` for a local iOS Simulator artifact, `preview` for internal device testing, and `production` when preparing App Store/TestFlight builds.
+
 ## Current MVP Flow
 
 ```text
