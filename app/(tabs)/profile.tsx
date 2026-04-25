@@ -20,8 +20,17 @@ export default function ProfileTab() {
   const highestAux = Math.max(0, ...verdicts.map((verdict) => verdict.scores.find((score) => score.key === 'auxRisk')?.value ?? 0));
 
   const reset = () => {
-    clearHistory();
-    Alert.alert('Record cleared.', 'Your criminal record is clean. Suspiciously clean.');
+    Alert.alert('Clear verdict history?', 'This removes local verdict records from this device.', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Clear',
+        style: 'destructive',
+        onPress: () => {
+          clearHistory();
+          Alert.alert('Record cleared.', 'Your criminal record is clean. Suspiciously clean.');
+        },
+      },
+    ]);
   };
 
   return (
@@ -43,7 +52,7 @@ export default function ProfileTab() {
 
       <CourtCard accent={colors.electricPurple}>
         <SettingRow label="Haptics" value={settings.hapticsEnabled} onValueChange={settings.toggleHaptics} />
-        <SettingRow label="Sound Placeholder" value={settings.soundEnabled} onValueChange={settings.toggleSound} />
+        <SettingRow label="Court Sound FX" value={settings.soundEnabled} onValueChange={settings.toggleSound} />
         <SettingRow label="Share Watermark" value={settings.watermarkEnabled} onValueChange={settings.toggleWatermark} />
       </CourtCard>
 
