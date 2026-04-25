@@ -9,7 +9,7 @@
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/generated/neon-court-seal.png",
       "resizeMode": "contain",
       "backgroundColor": "#07070F"
     },
