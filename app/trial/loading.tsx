@@ -1,9 +1,13 @@
 import { useEffect } from 'react';
 import { router } from 'expo-router';
-import { Screen } from '../../src/components/common/Screen';
+import { ImageBackground, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { TrialLoadingSequence } from '../../src/components/trial/TrialLoadingSequence';
+import { colors } from '../../src/constants/colors';
 import { useAuthStore } from '../../src/store/authStore';
 import { useTrialStore } from '../../src/store/trialStore';
+
+const scannerBackground = require('../../assets/generated/trial-scanner-bg.png');
 
 export default function TrialLoadingScreen() {
   const connectSpotifyDemo = useAuthStore((state) => state.connectSpotifyDemo);
@@ -25,8 +29,21 @@ export default function TrialLoadingScreen() {
   }, [connectSpotifyDemo, generateDemoVerdict, setGenerationStage]);
 
   return (
-    <Screen scroll={false}>
-      <TrialLoadingSequence stage={stage} />
-    </Screen>
+    <ImageBackground source={scannerBackground} resizeMode="cover" style={styles.root}>
+      <View style={styles.scrim}>
+        <SafeAreaView style={styles.safe}>
+          <View style={styles.content}>
+            <TrialLoadingSequence stage={stage} />
+          </View>
+        </SafeAreaView>
+      </View>
+    </ImageBackground>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: colors.background },
+  scrim: { flex: 1, backgroundColor: 'rgba(5, 5, 7, 0.52)' },
+  safe: { flex: 1 },
+  content: { flex: 1, padding: 20, paddingBottom: 44 },
+});
