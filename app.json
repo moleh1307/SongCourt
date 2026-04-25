@@ -14,6 +14,7 @@
       "backgroundColor": "#07070F"
     },
     "ios": {
+      "bundleIdentifier": "com.melihkarakose.songcourt",
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryAddUsageDescription": "SongCourt saves verdict cards to your photo library when you choose Save Image."
