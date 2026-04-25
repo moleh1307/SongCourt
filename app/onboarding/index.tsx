@@ -49,7 +49,7 @@ export default function OnboardingScreen() {
           <Icon color={colors.neonGreen} size={74} />
           <Text style={styles.file}>AUX CRIMES</Text>
         </View>
-        <Text style={styles.title}>{current.title}</Text>
+        <Text adjustsFontSizeToFit numberOfLines={3} style={styles.title}>{current.title}</Text>
         <Text style={styles.text}>{current.text}</Text>
       </CourtCard>
       <View style={styles.dots}>
@@ -64,9 +64,9 @@ export default function OnboardingScreen() {
 
 const styles = StyleSheet.create({
   logo: { color: colors.neonGreen, fontSize: 16, fontWeight: '900' },
-  visual: { height: 190, alignItems: 'center', justifyContent: 'center', gap: 12 },
+  visual: { height: 150, alignItems: 'center', justifyContent: 'center', gap: 12 },
   file: { color: colors.dangerRed, fontSize: 18, fontWeight: '900', transform: [{ rotate: '-4deg' }] },
-  title: { color: colors.text, fontSize: 34, fontWeight: '900', textTransform: 'uppercase' },
+  title: { color: colors.text, fontSize: 28, fontWeight: '900', textTransform: 'uppercase' },
   text: { color: colors.muted, fontSize: 16, fontWeight: '700', marginTop: 10 },
   dots: { flexDirection: 'row', gap: 8, justifyContent: 'center' },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.border },
