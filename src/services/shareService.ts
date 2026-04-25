@@ -1,4 +1,5 @@
 import * as Clipboard from 'expo-clipboard';
+import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
 import { captureRef } from 'react-native-view-shot';
 import type { RefObject } from 'react';
@@ -24,5 +25,12 @@ export const shareService = {
     if (await Sharing.isAvailableAsync()) {
       await Sharing.shareAsync(uri);
     }
+  },
+  async saveImage(uri: string) {
+    const permission = await MediaLibrary.requestPermissionsAsync();
+    if (!permission.granted) {
+      throw new Error('Photo library permission was not granted.');
+    }
+    await MediaLibrary.saveToLibraryAsync(uri);
   },
 };

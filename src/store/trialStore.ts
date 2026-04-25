@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import * as Haptics from 'expo-haptics';
 import { spotifyService } from '../services/spotifyService';
+import { analyticsService } from '../services/analyticsService';
 import { verdictService } from '../services/verdictService';
 import type { AppError } from '../types/error';
 import type { Verdict } from '../types/verdict';
@@ -34,12 +35,20 @@ export const useTrialStore = create<TrialState>((set) => ({
   setGenerationStage: (stage) => set({ generationStage: stage }),
   generateDemoVerdict: async () => {
     set({ isGenerating: true, error: undefined, generationStage: 0 });
+    analyticsService.track('trial_generation_started', { is_demo_mode: true });
     await haptic(Haptics.ImpactFeedbackStyle.Light);
     try {
       const snapshot = await spotifyService.getDemoSnapshot();
       const verdict = await verdictService.generateVerdict(snapshot);
       useHistoryStore.getState().addVerdict(verdict);
       set({ currentVerdict: verdict, isGenerating: false, generationStage: 4 });
+      analyticsService.track('trial_generation_completed', {
+        is_demo_mode: true,
+        verdict_id: verdict.id,
+        aux_risk_score: verdict.scores.find((score) => score.key === 'auxRisk')?.value,
+        rarity: verdict.rarity,
+        date: verdict.date,
+      });
       await haptic(Haptics.ImpactFeedbackStyle.Heavy);
       return verdict;
     } catch {

@@ -11,10 +11,22 @@ export default function SplashScreen() {
   const hasCompletedOnboarding = useAuthStore((state) => state.hasCompletedOnboarding);
 
   useEffect(() => {
+    let isMounted = true;
     const timeout = setTimeout(() => {
+      if (!isMounted) return;
+      const hydrated = useAuthStore.persist.hasHydrated();
+      if (!hydrated) {
+        useAuthStore.persist.onFinishHydration((state) => {
+          router.replace(state.hasCompletedOnboarding ? '/(tabs)/trial' : '/onboarding');
+        });
+        return;
+      }
       router.replace(hasCompletedOnboarding ? '/(tabs)/trial' : '/onboarding');
     }, 1700);
-    return () => clearTimeout(timeout);
+    return () => {
+      isMounted = false;
+      clearTimeout(timeout);
+    };
   }, [hasCompletedOnboarding]);
 
   return (

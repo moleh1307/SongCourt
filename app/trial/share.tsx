@@ -39,6 +39,16 @@ export default function ShareScreen() {
     }
   };
 
+  const save = async () => {
+    try {
+      const uri = await shareService.captureShareCard(cardRef);
+      await shareService.saveImage(uri);
+      Alert.alert('Saved.', 'The verdict is now evidence in your camera roll.');
+    } catch {
+      Alert.alert('Save failed.', 'The verdict could not leave the courtroom.');
+    }
+  };
+
   const copy = async () => {
     await shareService.copyCaption(verdict.shareCaption);
     Alert.alert('Caption copied.', 'The group chat has been warned.');
@@ -52,6 +62,7 @@ export default function ShareScreen() {
         <Text style={styles.caption}>{verdict.shareCaption}</Text>
       </CourtCard>
       <NeonButton onPress={share}>Share</NeonButton>
+      <SecondaryButton onPress={save}>Save Image</SecondaryButton>
       <SecondaryButton onPress={copy}>Copy Caption</SecondaryButton>
       <SecondaryButton onPress={() => router.back()}>Back to Verdict</SecondaryButton>
     </Screen>
