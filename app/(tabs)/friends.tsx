@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { Cable, Users } from 'lucide-react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
 import { NeonButton } from '../../src/components/common/NeonButton';
@@ -17,7 +17,12 @@ export default function FriendsTab() {
         </View>
         <Text style={styles.empty}>No co-defendants yet.</Text>
         <Text style={styles.muted}>Send an invite and test your aux chemistry.</Text>
-        <NeonButton onPress={() => undefined} variant="purple">Invite a Friend</NeonButton>
+        <NeonButton
+          onPress={() => Alert.alert('Invites are next.', 'No co-defendants yet. The court is preparing friend compatibility.')}
+          variant="purple"
+        >
+          Invite a Friend
+        </NeonButton>
       </CourtCard>
       <CourtCard accent={colors.warningYellow}>
         <Text style={styles.score}>34%</Text>

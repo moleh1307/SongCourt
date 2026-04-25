@@ -50,7 +50,12 @@ export default function ProfileTab() {
       <CourtCard accent={colors.warningYellow}>
         <Text style={styles.premium}>UNLOCK FULL COURT ACCESS</Text>
         <Text style={styles.muted}>More verdicts, better share cards, deeper stats, and no watermark.</Text>
-        <NeonButton onPress={() => undefined} variant="purple">Unlock SongCourt+</NeonButton>
+        <NeonButton
+          onPress={() => Alert.alert('SongCourt+ is sealed.', 'Premium court powers are designed, but not active in this MVP.')}
+          variant="purple"
+        >
+          Unlock SongCourt+
+        </NeonButton>
       </CourtCard>
 
       <SecondaryButton onPress={reset}>Clear Verdict History</SecondaryButton>

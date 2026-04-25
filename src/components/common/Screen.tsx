@@ -24,5 +24,5 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   safe: { flex: 1 },
   scroll: { flexGrow: 1 },
-  content: { flex: 1, padding: 20, gap: 18 },
+  content: { flex: 1, padding: 20, paddingBottom: 110, gap: 18 },
 });
