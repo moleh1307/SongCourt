@@ -10,7 +10,7 @@ type ScreenProps = {
 };
 
 export function Screen({ children, scroll = true }: ScreenProps) {
-  const content = <View style={styles.content}>{children}</View>;
+  const content = <View style={[styles.content, !scroll && styles.fixedContent]}>{children}</View>;
   return (
     <LinearGradient colors={[colors.background, '#10101F', colors.background]} style={styles.root}>
       <SafeAreaView style={styles.safe}>
@@ -24,5 +24,6 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   safe: { flex: 1 },
   scroll: { flexGrow: 1 },
-  content: { flex: 1, padding: 20, paddingBottom: 110, gap: 18 },
+  content: { padding: 20, paddingBottom: 150, gap: 18 },
+  fixedContent: { flex: 1 },
 });
