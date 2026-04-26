@@ -81,7 +81,7 @@ export default function ShareScreen() {
       </CourtCard>
       <SecondaryButton onPress={save}>Save Image</SecondaryButton>
       <SecondaryButton onPress={copy}>Copy Caption</SecondaryButton>
-      <SecondaryButton onPress={() => router.back()}>Back to Verdict</SecondaryButton>
+      <SecondaryButton onPress={() => router.replace('/trial/result')}>Back to Verdict</SecondaryButton>
     </Screen>
   );
 }
