@@ -12,10 +12,15 @@ const buildEvidence = (snapshot: MusicSnapshot): Evidence[] => {
     counts[track.title] = (counts[track.title] ?? 0) + 1;
     return counts;
   }, {});
-  const [topRepeatedTitle, topRepeatedCount] = Object.entries(titleCounts).sort((a, b) => b[1] - a[1])[0];
-  const topArtist = snapshot.topArtists[0]?.name ?? 'one artist';
+  const [topRepeatedTitle, topRepeatedCount] = Object.entries(titleCounts).sort((a, b) => b[1] - a[1])[0] ?? [
+    snapshot.topTracks[0]?.title ?? 'your top track',
+    1,
+  ];
+  const topArtist = snapshot.topArtists[0]?.name ?? snapshot.topTracks[0]?.artist ?? 'one artist';
   const topArtistCount = snapshot.recentTracks.filter((track) => track.artist === topArtist).length;
-  const topArtistPercentage = Math.round((topArtistCount / snapshot.recentTracks.length) * 100);
+  const topArtistPercentage = snapshot.recentTracks.length
+    ? Math.round((topArtistCount / snapshot.recentTracks.length) * 100)
+    : 0;
 
   return [
     {
