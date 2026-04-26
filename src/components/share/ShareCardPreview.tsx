@@ -63,7 +63,7 @@ export const ShareCardPreview = forwardRef<View, ShareCardPreviewProps>(
 
 const styles = StyleSheet.create({
   card: {
-    width: 300,
+    width: 270,
     aspectRatio: 9 / 16,
     backgroundColor: colors.background,
     borderRadius: 8,
