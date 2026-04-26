@@ -5,9 +5,16 @@ module.exports = async (req, res) => {
     const url = new URL(req.url, `https://${req.headers.host}`);
     const returnUri = url.searchParams.get('returnUri');
     const appState = url.searchParams.get('state');
-    const allowedReturnUri = process.env.SONGCOURT_ALLOWED_RETURN_URI ?? 'songcourt://auth/spotify/callback';
+    const allowedReturnUris = (
+      process.env.SONGCOURT_ALLOWED_RETURN_URIS ??
+      process.env.SONGCOURT_ALLOWED_RETURN_URI ??
+      'songcourt://auth/spotify/callback'
+    )
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
 
-    if (!returnUri || returnUri !== allowedReturnUri || !appState) {
+    if (!returnUri || !allowedReturnUris.includes(returnUri) || !appState) {
       json(res, 400, { error: 'Invalid Spotify login request.' });
       return;
     }
