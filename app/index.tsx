@@ -7,8 +7,8 @@ import { GlowText } from '../src/components/common/GlowText';
 import { colors } from '../src/constants/colors';
 import { useAuthStore } from '../src/store/authStore';
 
-const splashBackground = require('../assets/generated/splash-bg.png');
-const courtSeal = require('../assets/generated/neon-court-seal.png');
+const splashBackground = require('../assets/premium/courtroom-stage-bg.png');
+const courtSeal = require('../assets/premium/app-icon-seal.png');
 
 export default function SplashScreen() {
   const hasCompletedOnboarding = useAuthStore((state) => state.hasCompletedOnboarding);
@@ -43,10 +43,12 @@ export default function SplashScreen() {
               ))}
             </View>
             <Image source={courtSeal} resizeMode="contain" style={styles.seal} />
-            <Gavel color={colors.neonGreen} size={52} />
+            <Gavel color={colors.neonGreen} size={38} />
             <GlowText size={48}>SongCourt</GlowText>
-            <Text style={styles.subtitle}>Your music taste is under investigation.</Text>
-            <Text style={styles.loading}>CASE FILE LOADING</Text>
+            <Text style={styles.subtitle}>Your listening history. On trial.</Text>
+            <View style={styles.loadingPill}>
+              <Text style={styles.loading}>CASE FILE LOADING</Text>
+            </View>
           </View>
         </SafeAreaView>
       </View>
@@ -57,11 +59,20 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
   safe: { flex: 1 },
-  scrim: { flex: 1, backgroundColor: 'rgba(5, 5, 7, 0.48)' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16 },
-  seal: { width: 124, height: 124, marginBottom: -8 },
-  subtitle: { color: colors.text, fontSize: 16, fontWeight: '700', textAlign: 'center' },
+  scrim: { flex: 1, backgroundColor: 'rgba(5, 5, 7, 0.34)' },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 14, paddingHorizontal: 28 },
+  seal: { width: 116, height: 116, marginBottom: -6, borderRadius: 24 },
+  subtitle: { color: colors.text, fontSize: 16, fontWeight: '800', textAlign: 'center' },
+  loadingPill: {
+    borderWidth: 1,
+    borderColor: 'rgba(215, 255, 31, 0.42)',
+    backgroundColor: 'rgba(5, 5, 7, 0.54)',
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    marginTop: 6,
+  },
   loading: { color: colors.muted, fontSize: 11, fontWeight: '900' },
-  equalizer: { position: 'absolute', flexDirection: 'row', gap: 8, opacity: 0.22, alignItems: 'flex-end' },
-  bar: { width: 12, backgroundColor: colors.electricPurple, borderRadius: 6 },
+  equalizer: { position: 'absolute', bottom: 92, flexDirection: 'row', gap: 8, opacity: 0.34, alignItems: 'flex-end' },
+  bar: { width: 12, backgroundColor: colors.neonGreen, borderRadius: 6 },
 });

@@ -2,7 +2,7 @@ import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../constants/colors';
 import type { Evidence } from '../../types/verdict';
 
-const paperTexture = require('../../../assets/generated/court-paper-texture.png');
+const paperTexture = require('../../../assets/premium/case-file-paper.png');
 
 export function EvidenceCard({ evidence }: { evidence: Evidence }) {
   return (
@@ -18,9 +18,9 @@ export function EvidenceCard({ evidence }: { evidence: Evidence }) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: colors.courtPaper, borderRadius: 8, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255, 53, 94, 0.55)' },
+  card: { backgroundColor: colors.courtPaper, borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(239, 185, 75, 0.42)' },
   paper: { width: '100%' },
-  overlay: { padding: 16, gap: 8, backgroundColor: 'rgba(255, 244, 214, 0.66)' },
+  overlay: { padding: 16, gap: 8, backgroundColor: 'rgba(244, 227, 189, 0.68)' },
   label: { color: colors.dangerRed, fontSize: 12, fontWeight: '900' },
-  text: { color: colors.black, fontSize: 16, lineHeight: 22, fontWeight: '700' },
+  text: { color: colors.ink, fontSize: 16, lineHeight: 22, fontWeight: '800' },
 });

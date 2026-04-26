@@ -7,7 +7,7 @@ import { colors } from '../../src/constants/colors';
 import { useAuthStore } from '../../src/store/authStore';
 import { useTrialStore } from '../../src/store/trialStore';
 
-const scannerBackground = require('../../assets/generated/trial-scanner-bg.png');
+const scannerBackground = require('../../assets/premium/trial-scanner-bg.png');
 
 export default function TrialLoadingScreen() {
   const connectSpotifyDemo = useAuthStore((state) => state.connectSpotifyDemo);
@@ -51,7 +51,7 @@ export default function TrialLoadingScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  scrim: { flex: 1, backgroundColor: 'rgba(5, 5, 7, 0.52)' },
+  scrim: { flex: 1, backgroundColor: 'rgba(5, 5, 7, 0.32)' },
   safe: { flex: 1 },
   content: { flex: 1, padding: 20, paddingBottom: 44 },
 });

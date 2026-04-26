@@ -9,9 +9,9 @@
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/generated/neon-court-seal.png",
+      "image": "./assets/premium/app-icon-seal.png",
       "resizeMode": "contain",
-      "backgroundColor": "#07070F"
+      "backgroundColor": "#06070B"
     },
     "ios": {
       "bundleIdentifier": "com.melihkarakose.songcourt",
@@ -23,7 +23,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#07070F"
+        "backgroundColor": "#06070B"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false

@@ -1,106 +1,72 @@
-# SongCourt Generated Image Prompts
+# SongCourt Premium Image Prompts
 
-Use these with ChatGPT v2 Images or another high-quality image model. Keep outputs as PNG. Avoid text inside generated images unless the prompt explicitly asks for a logo lockup; app text is easier to control in React Native.
+Use these with ChatGPT Images v2 or another high-quality image model. Keep outputs as PNG. Avoid text inside generated images; app text is controlled in React Native for readability.
+
+The current premium asset home is `assets/premium/`. The older `assets/generated/` set was removed because it looked too prototype-like.
 
 ## 1. App Icon
 
 - Size: `1024 x 1024`
 - Format: PNG, no transparency required
 - Safe area: keep primary symbol inside the central `760 x 760`
-- Output path after creation: `assets/icon.png`, then also derive `assets/adaptive-icon.png`
+- Output path after creation: `assets/premium/app-icon-seal.png`, then also copy to `assets/icon.png`, `assets/adaptive-icon.png`, `assets/splash-icon.png`, and `assets/favicon.png`
 
 Prompt:
 
 ```text
-Create a premium iOS app icon for "SongCourt", a viral music personality app where Spotify Wrapped meets a neon courtroom. Dark black-glass background (#07070F), glowing neon green and electric purple edge lighting, a stylized gavel crossed with an aux cable, subtle vinyl record circle behind it, tiny red guilty stamp shape as a secondary detail. No readable small text. Bold, simple, recognizable at small size. Centered composition, high contrast, glossy 3D-but-clean app icon style, no mockup, no phone, no people, no watermark.
+Create a premium square app icon for SongCourt with no text, combining courtroom scales and music/audio energy. Deep black glossy square icon background with subtle marble texture. Central neon court scales symbol integrated with a circular vinyl-record groove and tiny waveform arcs. Polished iOS app icon, high-end consumer music app, simple strong silhouette, vector-friendly 3D glow but not cluttered. Square 1:1, centered symbol, generous padding, readable at small size. Black, charcoal, magenta, acid lime, small cream glint. No words, no letters, no logos, no watermark, no official brand marks, no phone frame, no clip-art gavel.
 ```
 
 ## 2. Splash Background
 
-- Size: `1290 x 2796` for iPhone portrait
+- Size: vertical iPhone portrait, 9:16
 - Format: PNG
-- Output path suggestion: `assets/generated/splash-bg.png`
+- Output path: `assets/premium/courtroom-stage-bg.png`
 
 Prompt:
 
 ```text
-Create a vertical mobile splash background for SongCourt. Scene: underground neon courtroom fused with a nightclub and music equalizer. Black glass room, subtle judge bench silhouette, glowing green and purple equalizer bars behind a central empty space for app logo, faint red "guilty" stamp shapes, vinyl-disc shadows, polished floor reflections. Cinematic, high contrast, premium, dramatic, slightly chaotic but not cluttered. Leave the center mostly clean for overlaid text. No readable text, no people, no logos, no watermark.
+Create a premium dark courtroom fused with underground music club stage, no people in foreground, designed as an iPhone portrait app background. Black marble courtroom wall, judge bench silhouette, subtle speaker stacks integrated into shadows, faint audio waveform lines near the lower edge, neon court seal glow in the distance but no readable text. Cinematic premium 3D/editorial render. Central negative space for native app title and buttons, strong depth, safe darker margins for text. Controlled black gloss, restrained hot-magenta and acidic-lime reflections. No words, no letters, no logos, no watermark, no humans, no brand marks, no UI elements.
 ```
 
 ## 3. Trial Loading Scanner Background
 
-- Size: `1290 x 2796`
+- Size: vertical iPhone portrait, 9:16
 - Format: PNG
-- Output path suggestion: `assets/generated/trial-scanner-bg.png`
+- Output path: `assets/premium/trial-scanner-bg.png`
 
 Prompt:
 
 ```text
-Create a vertical mobile background for a dramatic "music trial loading scanner". Dark neon courtroom, rotating evidence folders implied through motion blur, glowing vinyl fingerprint scanner in the center, equalizer bars, waveform lines, red warning highlights, purple haze, green scanning beam. Futuristic arcade reward-machine energy. Leave room for overlaid loading text in the middle and progress steps near the bottom. No readable text, no humans, no watermark.
+Create a dark premium evidence scanner background for a music trial loading screen. Black glass scanner bed, legal case-file edges, waveform traces, faint grid, subtle scanning light beam, small abstract evidence markers without letters. Vertical 9:16 portrait, central area dark and readable for native loading text, diagonal scanner light crossing the lower half, subtle legal/music details at edges. Suspenseful, premium, controlled neon scan light. No words, no letters, no logos, no watermark, no phone frame, no buttons, no real brand marks, no humans.
 ```
 
-## 4. Share Card Background: Dark Neon Court
+## 4. Share Poster Background
 
-- Size: `1080 x 1920`
+- Size: vertical 4:5 or 9:16
 - Format: PNG
-- Output path suggestion: `assets/generated/share-neon-court.png`
+- Output path: `assets/premium/verdict-poster-bg.png`
 
 Prompt:
 
 ```text
-Create a vertical story-format background for a SongCourt share card. Dark neon courtroom aesthetic, black background, electric purple frame glow, neon green waveform lines, red guilty stamp texture, subtle vinyl record rings, evidence-folder corners, premium social-share card look. Leave large clear zones for overlaid text: top brand area, center score/verdict area, lower charge/sentence area. No readable text, no people, no watermark.
+Create a premium blank concert-courtroom poster background for a shareable verdict card. No readable text; the app will overlay native text. Black distressed poster paper, neon court seal symbol made of scales inside a chain ring, speaker silhouettes, subtle crowd silhouettes at the bottom, thin waveform accents, legal stamp energy without words. Premium music festival poster meets underground courtroom graphic design, high-end editorial. Center seal lower-middle, top and middle have clean dark negative space for large native typography, bottom has subtle energy/crowd/speaker details. No words, no letters, no logos, no watermark, no UI buttons, no phone frame, no people faces.
 ```
 
-## 5. Share Card Background: Court Receipt
+## 5. Case File Paper
 
-- Size: `1080 x 1920`
+- Size: vertical 3:4
 - Format: PNG
-- Output path suggestion: `assets/generated/share-court-receipt.png`
+- Output path: `assets/premium/case-file-paper.png`
 
 Prompt:
 
 ```text
-Create a vertical story-format receipt paper background for a funny music courtroom verdict card. Warm court-paper cream (#FFF4D6), subtle receipt paper fibers, faint perforated edges, red stamp texture, fake barcode-like decorative lines at bottom but no readable text, slight shadow and scanned-paper imperfection. Leave clear space for overlaid mono text. Premium meme receipt style, not messy, no watermark.
-```
-
-## 6. Share Card Background: Mugshot Poster
-
-- Size: `1080 x 1920`
-- Format: PNG
-- Output path suggestion: `assets/generated/share-mugshot-poster.png`
-
-Prompt:
-
-```text
-Create a vertical story-format mugshot poster background for SongCourt. Dark music-crime poster, subtle height chart lines, neon red and hot pink rim lighting, black glass texture, aux cable and vinyl record details, dramatic courtroom poster energy. Leave empty areas for overlaid "wanted" style text and score. No readable text, no face, no people, no watermark.
-```
-
-## 7. Court Paper Texture
-
-- Size: `2048 x 2048`
-- Format: PNG
-- Output path suggestion: `assets/generated/court-paper-texture.png`
-
-Prompt:
-
-```text
-Create a seamless square court-paper texture for UI cards. Cream paper color (#FFF4D6), very subtle fibers, tiny red stamp residue, faint fold marks, low contrast, clean enough for readable black text on top. No readable words, no strong stains, no watermark.
-```
-
-## 8. Neon Court Seal
-
-- Size: `2048 x 2048`
-- Format: PNG with transparent background if possible
-- Output path suggestion: `assets/generated/neon-court-seal.png`
-
-Prompt:
-
-```text
-Create a transparent-background neon court seal emblem for SongCourt. Circular seal with stylized gavel, vinyl record, waveform, aux cable, and small star details. Neon green, electric purple, hot pink, and red accents. Premium vector-like emblem, crisp edges, centered, no readable text, no watermark.
+Create a blank premium legal case-file paper texture, no readable text, for use behind native React Native UI elements. Aged court docket folder, layered tabs, faint stamped circles without legible words, subtle creases, barcode-like abstract lines, evidence folder corners. Photorealistic editorial product texture, premium music-culture zine meets legal archive. Vertical portrait 3:4, mostly flat front-facing surface, center area clear enough for app text overlays, slight layered-folder depth at edges. Warm cream paper against smoky dark edge vignette, premium tactile texture. No readable words, no letters, no logos, no watermark, no UI, no phone frame, no hands.
 ```
 
 ## Integration Notes
 
 - Prefer using generated images as backgrounds or symbols, with React Native text overlaid in the app.
 - Do not bake small app copy into images; it will not scale well.
-- Keep all generated files in `assets/generated/` first, then wire them into components after visual review.
+- Keep final project-bound assets in `assets/premium/`.

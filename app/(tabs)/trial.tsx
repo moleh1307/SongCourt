@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { CheckCircle2, Gavel, Music2, ShieldCheck } from 'lucide-react-native';
-import { StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
 import { DopamineStrip } from '../../src/components/common/DopamineStrip';
 import { NeonButton } from '../../src/components/common/NeonButton';
@@ -12,6 +12,8 @@ import { useAuthStore } from '../../src/store/authStore';
 import { useHistoryStore } from '../../src/store/historyStore';
 import { useTrialStore } from '../../src/store/trialStore';
 import { formatDisplayDate } from '../../src/utils/date';
+
+const caseFilePaper = require('../../assets/premium/case-file-paper.png');
 
 export default function TrialTab() {
   const spotifyConnected = useAuthStore((state) => state.spotifyConnected);
@@ -36,14 +38,20 @@ export default function TrialTab() {
 
       {!spotifyConnected ? (
         <CourtCard accent={colors.neonGreen}>
-          <View style={styles.heroTop}>
-            <View style={styles.caseSeal}>
-              <Music2 color={colors.neonGreen} size={28} />
+          <ImageBackground source={caseFilePaper} resizeMode="cover" style={styles.fileHero}>
+            <View style={styles.fileOverlay}>
+              <View style={styles.heroTop}>
+                <View style={styles.caseSeal}>
+                  <Music2 color={colors.neonGreen} size={28} />
+                </View>
+                <View style={styles.statusPill}>
+                  <Text style={styles.statusText}>NO EVIDENCE</Text>
+                </View>
+              </View>
+              <Text style={styles.fileTitle}>YOUR TASTE ON TRIAL</Text>
+              <Text style={styles.fileLine}>Status: pending evidence</Text>
             </View>
-            <View style={styles.statusPill}>
-              <Text style={styles.statusText}>NO EVIDENCE</Text>
-            </View>
-          </View>
+          </ImageBackground>
           <Text style={styles.heroTitle}>Connect Spotify to unlock the courtroom.</Text>
           <Text style={styles.heroCopy}>SongCourt needs listening history before it can file charges.</Text>
           <NeonButton onPress={() => router.push('/connect')}>Connect Spotify</NeonButton>
@@ -52,14 +60,20 @@ export default function TrialTab() {
       ) : todayVerdict ? (
         <>
           <CourtCard accent={colors.dangerRed}>
-            <View style={styles.heroTop}>
-              <View style={[styles.caseSeal, styles.caseSealDanger]}>
-                <ShieldCheck color={colors.dangerRed} size={28} />
+            <ImageBackground source={caseFilePaper} resizeMode="cover" style={styles.fileHero}>
+              <View style={styles.fileOverlay}>
+                <View style={styles.heroTop}>
+                  <View style={[styles.caseSeal, styles.caseSealDanger]}>
+                    <ShieldCheck color={colors.dangerRed} size={28} />
+                  </View>
+                  <View style={[styles.statusPill, styles.statusPillDanger]}>
+                    <Text style={[styles.statusText, styles.statusTextDanger]}>SEALED</Text>
+                  </View>
+                </View>
+                <Text style={styles.fileTitle}>CASE FILE CLOSED</Text>
+                <Text style={styles.fileLine}>Verdict: already in evidence</Text>
               </View>
-              <View style={[styles.statusPill, styles.statusPillDanger]}>
-                <Text style={[styles.statusText, styles.statusTextDanger]}>SEALED</Text>
-              </View>
-            </View>
+            </ImageBackground>
             <Text style={styles.heroTitle}>Today's verdict is already in evidence.</Text>
             <Text style={styles.heroCopy}>Open it, share it, or re-run the court if you want a fresh scan.</Text>
           </CourtCard>
@@ -81,14 +95,20 @@ export default function TrialTab() {
         </>
       ) : (
         <CourtCard accent={colors.neonGreen}>
-          <View style={styles.heroTop}>
-            <View style={styles.caseSeal}>
-              <Gavel color={colors.neonGreen} size={30} />
+          <ImageBackground source={caseFilePaper} resizeMode="cover" style={styles.fileHero}>
+            <View style={styles.fileOverlay}>
+              <View style={styles.heroTop}>
+                <View style={styles.caseSeal}>
+                  <Gavel color={colors.neonGreen} size={30} />
+                </View>
+                <View style={styles.statusPill}>
+                  <Text style={styles.statusText}>READY</Text>
+                </View>
+              </View>
+              <Text style={styles.fileTitle}>YOUR TASTE ON TRIAL</Text>
+              <Text style={styles.fileLine}>Charges ready for review</Text>
             </View>
-            <View style={styles.statusPill}>
-              <Text style={styles.statusText}>READY</Text>
-            </View>
-          </View>
+          </ImageBackground>
           <Text style={styles.heroTitle}>One tap. One brutal verdict.</Text>
           <Text style={styles.heroCopy}>Your recent listens are ready for a daily music trial.</Text>
           <NeonButton onPress={startTrial} accessibilityLabel="Put me on trial">Put Me On Trial</NeonButton>
@@ -117,6 +137,8 @@ export default function TrialTab() {
 }
 
 const styles = StyleSheet.create({
+  fileHero: { height: 290, borderRadius: 10, overflow: 'hidden', marginBottom: 18 },
+  fileOverlay: { flex: 1, padding: 18, backgroundColor: 'rgba(244, 227, 189, 0.12)', justifyContent: 'space-between' },
   heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 },
   caseSeal: {
     width: 54,
@@ -140,6 +162,8 @@ const styles = StyleSheet.create({
   statusPillDanger: { borderColor: colors.dangerRed, backgroundColor: 'rgba(255, 53, 94, 0.08)' },
   statusText: { color: colors.neonGreen, fontSize: 11, fontWeight: '900' },
   statusTextDanger: { color: colors.dangerRed },
+  fileTitle: { color: colors.ink, fontSize: 39, lineHeight: 41, fontWeight: '900', maxWidth: 260 },
+  fileLine: { color: '#5C4633', fontSize: 13, fontWeight: '900', textTransform: 'uppercase' },
   heroTitle: { color: colors.text, fontSize: 27, lineHeight: 32, fontWeight: '900', textTransform: 'uppercase', marginBottom: 8 },
   heroCopy: { color: colors.muted, fontSize: 15, lineHeight: 21, fontWeight: '700', marginBottom: 18 },
   docketTitle: { color: colors.text, fontSize: 13, fontWeight: '900', textTransform: 'uppercase', marginBottom: 10 },

@@ -37,7 +37,6 @@ export function ShareCardCarousel({
           ref={cardRef}
           verdict={verdict}
           styleName={activeStyle}
-          defendant="Melih"
           showWatermark={showWatermark}
         />
       </View>

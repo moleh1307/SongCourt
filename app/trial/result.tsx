@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { ChargeCard } from '../../src/components/trial/ChargeCard';
 import { EvidenceCard } from '../../src/components/trial/EvidenceCard';
 import { RarityBadge } from '../../src/components/trial/RarityBadge';
@@ -17,6 +17,8 @@ import { useHistoryStore } from '../../src/store/historyStore';
 import { useSettingsStore } from '../../src/store/settingsStore';
 import { useTrialStore } from '../../src/store/trialStore';
 import { formatDisplayDate } from '../../src/utils/date';
+
+const verdictPoster = require('../../assets/premium/verdict-poster-bg.png');
 
 export default function TrialResultScreen() {
   const currentVerdict = useTrialStore((state) => state.currentVerdict);
@@ -47,19 +49,24 @@ export default function TrialResultScreen() {
     <Screen>
       <SectionHeader eyebrow="DAILY VERDICT" title={formatDisplayDate(verdict.date)} />
 
-      <CourtCard accent={colors.dangerRed}>
-        <VerdictStamp label={verdict.verdictLabel} />
-        <View style={styles.heroMeta}>
-          <View>
-            <Text style={styles.metaLabel}>AUX RISK</Text>
-            <Text style={styles.auxValue}>{aux}</Text>
+      <View style={styles.posterHero}>
+        <ImageBackground source={verdictPoster} resizeMode="cover" style={styles.posterImage}>
+          <View style={styles.posterScrim}>
+            <Text style={styles.posterKicker}>THE COURT HAS SPOKEN</Text>
+            <VerdictStamp label={verdict.verdictLabel} />
+            <View style={styles.heroMeta}>
+              <View>
+                <Text style={styles.metaLabel}>AUX RISK</Text>
+                <Text style={styles.auxValue}>{aux}</Text>
+              </View>
+              <View style={styles.rarityPill}>
+                <Text style={styles.rarityLabel}>RARITY</Text>
+                <Text style={styles.rarityValue}>{verdict.rarity}</Text>
+              </View>
+            </View>
           </View>
-          <View style={styles.rarityPill}>
-            <Text style={styles.rarityLabel}>RARITY</Text>
-            <Text style={styles.rarityValue}>{verdict.rarity}</Text>
-          </View>
-        </View>
-      </CourtCard>
+        </ImageBackground>
+      </View>
 
       <CourtCard quiet>
         <Text style={styles.shareHook}>{verdict.shareCaption}</Text>
@@ -92,6 +99,26 @@ export default function TrialResultScreen() {
 
 const styles = StyleSheet.create({
   muted: { color: colors.muted, fontSize: 16, fontWeight: '700' },
+  posterHero: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 53, 94, 0.52)',
+    backgroundColor: colors.deepCard,
+    shadowColor: colors.hotPink,
+    shadowOpacity: 0.2,
+    shadowRadius: 26,
+    shadowOffset: { width: 0, height: 16 },
+  },
+  posterImage: { minHeight: 560 },
+  posterScrim: {
+    flex: 1,
+    minHeight: 560,
+    padding: 18,
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(5, 5, 7, 0.42)',
+  },
+  posterKicker: { color: colors.hotPink, fontSize: 12, fontWeight: '900', textAlign: 'center' },
   heroMeta: {
     marginTop: 18,
     flexDirection: 'row',
