@@ -221,6 +221,8 @@ Goal: trust and ownership.
 
 ## Share Card System
 
+Concept references are saved under `/docs/design-concepts/share-cards/`.
+
 ### Required Formats
 
 1. **Verdict Poster**
