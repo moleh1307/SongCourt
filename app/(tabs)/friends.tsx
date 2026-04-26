@@ -45,7 +45,7 @@ export default function FriendsTab() {
         <Text style={styles.empty}>Co-defendants are waiting.</Text>
         <Text style={styles.muted}>Demo compatibility compares verdict patterns, replay behavior, and genre chaos.</Text>
         <NeonButton
-          onPress={() => Alert.alert('Invite copied soon.', 'Friend invites are staged for the next backend pass. Demo compatibility is available below.')}
+          onPress={() => Alert.alert('Invite preview.', 'Shareable invite links will unlock when accounts are connected. Demo compatibility is available below.')}
           variant="purple"
         >
           Invite a Friend

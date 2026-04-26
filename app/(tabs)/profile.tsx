@@ -60,7 +60,7 @@ export default function ProfileTab() {
         <Text style={styles.premium}>UNLOCK FULL COURT ACCESS</Text>
         <Text style={styles.muted}>More verdicts, better share cards, deeper stats, and no watermark.</Text>
         <NeonButton
-          onPress={() => Alert.alert('SongCourt+ is sealed.', 'Premium court powers are designed, but not active in this MVP.')}
+          onPress={() => Alert.alert('SongCourt+ preview.', 'Premium court powers are mapped for the next product pass.')}
           variant="purple"
         >
           Unlock SongCourt+
@@ -76,7 +76,7 @@ export default function ProfileTab() {
       >
         Disconnect Spotify
       </SecondaryButton>
-      <Text style={styles.legal}>Privacy Policy · Terms of Service · Delete Account</Text>
+      <Text style={styles.legal}>Privacy Policy - Terms of Service - Delete Account</Text>
     </Screen>
   );
 }

@@ -45,7 +45,7 @@ export default function HistoryTab() {
               accessibilityRole="button"
               onPress={() => {
                 setCurrentVerdict(verdict);
-                router.push('/trial/result');
+                router.push(`/history/${verdict.id}`);
               }}
             >
               <CourtCard accent={aux > 80 ? colors.dangerRed : colors.electricPurple}>
