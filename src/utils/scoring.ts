@@ -12,7 +12,7 @@ export const calculateScores = (snapshot: MusicSnapshot): VerdictScore[] => {
     counts[track.title] = (counts[track.title] ?? 0) + 1;
     return counts;
   }, {});
-  const maxRepeat = Math.max(...Object.values(trackCounts));
+  const maxRepeat = Math.max(0, ...Object.values(trackCounts));
   const uniqueGenres = new Set([
     ...snapshot.recentTracks.flatMap((track) => track.genres ?? []),
     ...snapshot.topArtists.flatMap((artist) => artist.genres),
@@ -22,7 +22,9 @@ export const calculateScores = (snapshot: MusicSnapshot): VerdictScore[] => {
   const genreChaos = clampScore(uniqueGenres * 10 + countMood(snapshot, 'chaotic') * 9);
   const mainCharacterEnergy = clampScore(countMood(snapshot, 'cinematic') * 18 + countMood(snapshot, 'intense') * 10);
   const npcScore = clampScore(
-    snapshot.recentTracks.reduce((sum, track) => sum + (track.popularity ?? 50), 0) / snapshot.recentTracks.length,
+    snapshot.recentTracks.length
+      ? snapshot.recentTracks.reduce((sum, track) => sum + (track.popularity ?? 50), 0) / snapshot.recentTracks.length
+      : 50,
   );
   const auxRisk = clampScore(
     0.3 * repeatOffender +
