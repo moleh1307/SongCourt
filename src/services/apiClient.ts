@@ -12,6 +12,7 @@ export class ApiClientError extends Error {
   constructor(
     message: string,
     public status?: number,
+    public details?: unknown,
   ) {
     super(message);
   }
@@ -33,7 +34,17 @@ export const apiClient = {
     });
 
     if (!response.ok) {
-      throw new ApiClientError('SongCourt API request failed.', response.status);
+      let details: unknown;
+      try {
+        details = await response.json();
+      } catch {
+        try {
+          details = await response.text();
+        } catch {
+          details = undefined;
+        }
+      }
+      throw new ApiClientError('SongCourt API request failed.', response.status, details);
     }
 
     return response.json() as Promise<Response>;
