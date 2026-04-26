@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const state = signToken({ kind: 'oauth', returnUri, appState }, 600);
+    const state = signToken({ kind: 'oauth', returnUri, appState }, 60 * 30);
     const query = new URLSearchParams({
       client_id: requireEnv('SPOTIFY_CLIENT_ID'),
       response_type: 'code',
