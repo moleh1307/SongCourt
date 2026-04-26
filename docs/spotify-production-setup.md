@@ -30,6 +30,14 @@ EXPO_PUBLIC_API_BASE_URL=https://<songcourt-api-domain>
 EXPO_PUBLIC_SPOTIFY_RETURN_URI=songcourt://auth/spotify/callback
 ```
 
+For Expo Go simulator QA, use the Expo development URL instead of the production custom scheme:
+
+```bash
+EXPO_PUBLIC_SPOTIFY_RETURN_URI=exp://<local-ip>:8081/--/auth/spotify/callback
+```
+
+Also add that exact Expo URI to `SONGCOURT_ALLOWED_RETURN_URIS` on the backend while testing.
+
 ## Backend Env
 
 Set these on the deployed backend:
@@ -40,6 +48,12 @@ SPOTIFY_CLIENT_SECRET=<spotify-client-secret>
 SPOTIFY_REDIRECT_URI=https://<songcourt-api-domain>/auth/spotify/callback
 SONGCOURT_TOKEN_SECRET=<long-random-secret>
 SONGCOURT_ALLOWED_RETURN_URI=songcourt://auth/spotify/callback
+```
+
+For multiple app return URIs, prefer:
+
+```bash
+SONGCOURT_ALLOWED_RETURN_URIS=songcourt://auth/spotify/callback,exp://<local-ip>:8081/--/auth/spotify/callback
 ```
 
 The included backend is stateless: it encrypts the Spotify refresh token inside signed SongCourt API tokens using `SONGCOURT_TOKEN_SECRET`. That is acceptable for a fast MVP if `SONGCOURT_TOKEN_SECRET` is strong and private; for production at scale, move refresh tokens into a database and keep only opaque session ids in app tokens.
