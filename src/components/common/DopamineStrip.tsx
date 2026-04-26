@@ -23,16 +23,16 @@ export function DopamineStrip({ items }: { items: DopamineItem[] }) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: 10 },
+  row: { flexDirection: 'row', gap: 8 },
   tile: {
     flex: 1,
-    minHeight: 68,
+    minHeight: 62,
     borderWidth: 1,
     borderRadius: 8,
-    backgroundColor: colors.deepCard,
+    backgroundColor: 'rgba(17, 17, 29, 0.78)',
     padding: 10,
     justifyContent: 'space-between',
   },
-  value: { fontSize: 21, fontWeight: '900' },
+  value: { fontSize: 20, fontWeight: '900' },
   label: { color: colors.muted, fontSize: 10, fontWeight: '900', textTransform: 'uppercase' },
 });

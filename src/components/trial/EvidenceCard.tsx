@@ -18,9 +18,9 @@ export function EvidenceCard({ evidence }: { evidence: Evidence }) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: colors.courtPaper, borderRadius: 8, overflow: 'hidden', borderWidth: 1, borderColor: colors.dangerRed },
+  card: { backgroundColor: colors.courtPaper, borderRadius: 8, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255, 53, 94, 0.55)' },
   paper: { width: '100%' },
   overlay: { padding: 16, gap: 8, backgroundColor: 'rgba(255, 244, 214, 0.66)' },
   label: { color: colors.dangerRed, fontSize: 12, fontWeight: '900' },
-  text: { color: colors.black, fontSize: 16, fontWeight: '700' },
+  text: { color: colors.black, fontSize: 16, lineHeight: 22, fontWeight: '700' },
 });

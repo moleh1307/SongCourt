@@ -14,13 +14,14 @@ export function VerdictStamp({ label }: { label: string }) {
 
 const styles = StyleSheet.create({
   stamp: {
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: colors.dangerRed,
     borderRadius: 8,
-    padding: 16,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
     transform: [{ rotate: '-2deg' }],
     backgroundColor: 'rgba(255,53,94,0.08)',
   },
   kicker: { color: colors.dangerRed, fontSize: 12, fontWeight: '900', textAlign: 'center' },
-  label: { color: colors.dangerRed, fontSize: 40, fontWeight: '900', textAlign: 'center', textTransform: 'uppercase' },
+  label: { color: colors.dangerRed, fontSize: 38, lineHeight: 43, fontWeight: '900', textAlign: 'center', textTransform: 'uppercase' },
 });

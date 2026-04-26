@@ -35,7 +35,7 @@ export function NeonButton({ children, onPress, variant = 'primary', accessibili
 
 const styles = StyleSheet.create({
   button: {
-    minHeight: 58,
+    minHeight: 56,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -45,5 +45,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
   },
   pressed: { transform: [{ scale: 0.98 }], opacity: 0.9 },
-  label: { color: colors.black, fontSize: 16, fontWeight: '900', letterSpacing: 0, textTransform: 'uppercase' },
+  label: { color: colors.black, fontSize: 15, fontWeight: '900', letterSpacing: 0, textTransform: 'uppercase' },
 });

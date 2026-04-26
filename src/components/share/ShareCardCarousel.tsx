@@ -32,6 +32,15 @@ export function ShareCardCarousel({
 
   return (
     <View style={styles.wrap}>
+      <View style={styles.previewWrap}>
+        <ShareCardPreview
+          ref={cardRef}
+          verdict={verdict}
+          styleName={activeStyle}
+          defendant="Melih"
+          showWatermark={showWatermark}
+        />
+      </View>
       <View style={styles.selectorRow}>
         {stylesList.map((styleName) => {
           const active = styleName === activeStyle;
@@ -48,15 +57,6 @@ export function ShareCardCarousel({
           );
         })}
       </View>
-      <View style={styles.previewWrap}>
-        <ShareCardPreview
-          ref={cardRef}
-          verdict={verdict}
-          styleName={activeStyle}
-          defendant="Melih"
-          showWatermark={showWatermark}
-        />
-      </View>
     </View>
   );
 }
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
   wrap: { gap: 14 },
   selectorRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   selectorChip: {
+    flexGrow: 1,
     minHeight: 36,
     borderRadius: 8,
     borderWidth: 1,

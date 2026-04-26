@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
     minHeight: 50,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.softBorder,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
     backgroundColor: colors.deepCard,
   },
-  label: { color: colors.text, fontSize: 14, fontWeight: '800', textTransform: 'uppercase' },
+  label: { color: colors.text, fontSize: 13, fontWeight: '800', textTransform: 'uppercase' },
 });

@@ -5,11 +5,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ChargeCard } from '../../src/components/trial/ChargeCard';
 import { EvidenceCard } from '../../src/components/trial/EvidenceCard';
 import { RarityBadge } from '../../src/components/trial/RarityBadge';
-import { ScoreGauge } from '../../src/components/trial/ScoreGauge';
 import { SentenceCard } from '../../src/components/trial/SentenceCard';
 import { VerdictStamp } from '../../src/components/trial/VerdictStamp';
 import { CourtCard } from '../../src/components/common/CourtCard';
-import { DopamineStrip } from '../../src/components/common/DopamineStrip';
 import { NeonButton } from '../../src/components/common/NeonButton';
 import { Screen } from '../../src/components/common/Screen';
 import { SecondaryButton } from '../../src/components/common/SecondaryButton';
@@ -43,40 +41,47 @@ export default function TrialResultScreen() {
   }
 
   const aux = verdict.scores.find((score) => score.key === 'auxRisk')?.value ?? 0;
+  const supportingScores = verdict.scores.filter((score) => score.key !== 'auxRisk').slice(0, 4);
 
   return (
     <Screen>
-      <SectionHeader eyebrow="SONGCOURT DAILY VERDICT" title={formatDisplayDate(verdict.date)} />
-      <VerdictStamp label={verdict.verdictLabel} />
-      <DopamineStrip
-        items={[
-          { value: `${aux}`, label: 'aux risk', color: colors.dangerRed },
-          { value: verdict.rarity, label: 'rarity pull', color: colors.hotPink },
-          { value: 'story bait', label: 'share status', color: colors.neonGreen },
-        ]}
-      />
-      <CourtCard accent={colors.hotPink}>
-        <Text style={styles.shareHook}>{verdict.shareCaption}</Text>
-        <Text style={styles.hint}>This is the line that should make someone ask for their own trial.</Text>
+      <SectionHeader eyebrow="DAILY VERDICT" title={formatDisplayDate(verdict.date)} />
+
+      <CourtCard accent={colors.dangerRed}>
+        <VerdictStamp label={verdict.verdictLabel} />
+        <View style={styles.heroMeta}>
+          <View>
+            <Text style={styles.metaLabel}>AUX RISK</Text>
+            <Text style={styles.auxValue}>{aux}</Text>
+          </View>
+          <View style={styles.rarityPill}>
+            <Text style={styles.rarityLabel}>RARITY</Text>
+            <Text style={styles.rarityValue}>{verdict.rarity}</Text>
+          </View>
+        </View>
       </CourtCard>
+
+      <CourtCard quiet>
+        <Text style={styles.shareHook}>{verdict.shareCaption}</Text>
+        <Text style={styles.hint}>This is the line people should want to repost.</Text>
+      </CourtCard>
+
       <NeonButton onPress={() => router.push('/trial/share')}>Create Share Card</NeonButton>
-      <ScoreGauge score={aux} />
+
       <View style={styles.scoreGrid}>
-        {verdict.scores
-          .filter((score) => score.key !== 'auxRisk')
-          .slice(0, 4)
-          .map((score) => (
-            <CourtCard key={score.key} accent={colors.border}>
-              <Text style={styles.scoreLabel}>{score.label}</Text>
-              <Text style={styles.scoreValue}>{score.value}</Text>
-              <Text style={styles.roast}>{score.roast}</Text>
-            </CourtCard>
-          ))}
+        {supportingScores.map((score) => (
+          <View key={score.key} style={styles.scoreTile}>
+            <Text style={styles.scoreValue}>{score.value}</Text>
+            <Text style={styles.scoreLabel} numberOfLines={2}>{score.label}</Text>
+          </View>
+        ))}
       </View>
+
       <ChargeCard charge={verdict.primaryCharge} />
       <SentenceCard sentence={verdict.sentence} />
       <RarityBadge rarity={verdict.rarity} subtitle={verdict.raritySubtitle} />
-      <SectionHeader eyebrow="EVIDENCE SUBMITTED" title="Exhibits" />
+
+      <SectionHeader eyebrow="EVIDENCE" title="Exhibits filed." />
       {verdict.evidence.map((evidence) => (
         <EvidenceCard key={evidence.id} evidence={evidence} />
       ))}
@@ -87,10 +92,38 @@ export default function TrialResultScreen() {
 
 const styles = StyleSheet.create({
   muted: { color: colors.muted, fontSize: 16, fontWeight: '700' },
-  scoreGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  scoreLabel: { color: colors.muted, fontSize: 12, fontWeight: '900' },
-  scoreValue: { color: colors.neonGreen, fontSize: 34, fontWeight: '900' },
-  roast: { color: colors.text, fontSize: 12, fontWeight: '700' },
-  shareHook: { color: colors.text, fontSize: 22, fontWeight: '900' },
+  heroMeta: {
+    marginTop: 18,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    gap: 14,
+  },
+  metaLabel: { color: colors.muted, fontSize: 11, fontWeight: '900' },
+  auxValue: { color: colors.neonGreen, fontSize: 58, lineHeight: 62, fontWeight: '900' },
+  rarityPill: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: colors.hotPink,
+    borderRadius: 8,
+    padding: 13,
+    backgroundColor: 'rgba(255, 62, 165, 0.08)',
+  },
+  rarityLabel: { color: colors.muted, fontSize: 10, fontWeight: '900' },
+  rarityValue: { color: colors.hotPink, fontSize: 24, fontWeight: '900' },
+  shareHook: { color: colors.text, fontSize: 22, lineHeight: 28, fontWeight: '900' },
   hint: { color: colors.muted, fontSize: 13, fontWeight: '800', marginTop: 8 },
+  scoreGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  scoreTile: {
+    width: '48%',
+    minHeight: 86,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.softBorder,
+    backgroundColor: colors.deepCard,
+    padding: 13,
+    justifyContent: 'space-between',
+  },
+  scoreValue: { color: colors.neonGreen, fontSize: 30, fontWeight: '900' },
+  scoreLabel: { color: colors.muted, fontSize: 11, fontWeight: '900', textTransform: 'uppercase' },
 });

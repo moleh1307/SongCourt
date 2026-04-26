@@ -12,9 +12,9 @@ type ScreenProps = {
 export function Screen({ children, scroll = true }: ScreenProps) {
   const content = <View style={[styles.content, !scroll && styles.fixedContent]}>{children}</View>;
   return (
-    <LinearGradient colors={[colors.background, '#10101F', colors.background]} style={styles.root}>
+    <LinearGradient colors={[colors.black, colors.backgroundHigh, colors.background]} style={styles.root}>
       <SafeAreaView style={styles.safe}>
-        {scroll ? <ScrollView contentContainerStyle={styles.scroll}>{content}</ScrollView> : content}
+        {scroll ? <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>{content}</ScrollView> : content}
       </SafeAreaView>
     </LinearGradient>
   );
@@ -24,6 +24,6 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   safe: { flex: 1 },
   scroll: { flexGrow: 1 },
-  content: { padding: 20, paddingBottom: 150, gap: 18 },
+  content: { padding: 20, paddingTop: 18, paddingBottom: 190, gap: 16 },
   fixedContent: { flex: 1 },
 });

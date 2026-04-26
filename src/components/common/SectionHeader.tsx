@@ -11,7 +11,7 @@ export function SectionHeader({ eyebrow, title }: { eyebrow?: string; title: str
 }
 
 const styles = StyleSheet.create({
-  wrap: { gap: 4 },
+  wrap: { gap: 5 },
   eyebrow: { color: colors.neonGreen, fontSize: 11, fontWeight: '900', textTransform: 'uppercase' },
-  title: { color: colors.text, fontSize: 25, fontWeight: '900', textTransform: 'uppercase' },
+  title: { color: colors.text, fontSize: 28, lineHeight: 33, fontWeight: '900', textTransform: 'uppercase' },
 });

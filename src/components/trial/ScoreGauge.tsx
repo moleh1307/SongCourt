@@ -16,15 +16,15 @@ export function ScoreGauge({ score, label = 'AUX RISK' }: { score: number; label
 
 const styles = StyleSheet.create({
   wrap: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 8,
-    padding: 20,
+    padding: 18,
     alignItems: 'center',
     backgroundColor: colors.deepCard,
-    shadowOpacity: 0.35,
-    shadowRadius: 24,
+    shadowOpacity: 0.22,
+    shadowRadius: 20,
   },
   label: { color: colors.muted, fontSize: 12, fontWeight: '900' },
-  score: { fontSize: 84, fontWeight: '900', lineHeight: 92 },
+  score: { fontSize: 78, fontWeight: '900', lineHeight: 84 },
   caption: { color: colors.text, fontSize: 15, fontWeight: '800', textTransform: 'uppercase' },
 });

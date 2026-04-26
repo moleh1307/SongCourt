@@ -6,23 +6,28 @@ type CourtCardProps = {
   children: ReactNode;
   paper?: boolean;
   accent?: string;
+  quiet?: boolean;
 };
 
-export function CourtCard({ children, paper, accent = colors.electricPurple }: CourtCardProps) {
-  return <View style={[styles.card, paper && styles.paper, { borderColor: accent }]}>{children}</View>;
+export function CourtCard({ children, paper, accent = colors.softBorder, quiet }: CourtCardProps) {
+  return <View style={[styles.card, quiet && styles.quiet, paper && styles.paper, { borderColor: accent }]}>{children}</View>;
 }
 
 const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.raisedCard,
+    borderColor: colors.softBorder,
+    backgroundColor: colors.glassCard,
     borderRadius: 8,
     padding: 18,
-    shadowColor: colors.electricPurple,
-    shadowOpacity: 0.24,
+    shadowColor: colors.black,
+    shadowOpacity: 0.32,
     shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: { width: 0, height: 10 },
+  },
+  quiet: {
+    shadowOpacity: 0.12,
+    backgroundColor: colors.deepCard,
   },
   paper: {
     backgroundColor: colors.courtPaper,
