@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
       spotifyConnected: true,
       createdAt: new Date().toISOString(),
     };
-    const ticket = signToken({ kind: 'ticket', refreshTokenEnc: encryptSecret(token.refresh_token), user }, 120);
+    const ticket = signToken({ kind: 'ticket', refreshTokenEnc: encryptSecret(token.refresh_token), user }, 60 * 10);
     const returnUrl = new URL(oauth.returnUri);
     returnUrl.searchParams.set('ticket', ticket);
     returnUrl.searchParams.set('state', oauth.appState);
