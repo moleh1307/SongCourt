@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { router } from 'expo-router';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { Alert, ImageBackground, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TrialLoadingSequence } from '../../src/components/trial/TrialLoadingSequence';
 import { colors } from '../../src/constants/colors';
@@ -22,8 +22,13 @@ export default function TrialLoadingScreen() {
       if (!spotifyConnected) {
         await connectSpotifyDemo();
       }
-      await generateVerdict();
-      router.replace('/trial/result');
+      try {
+        await generateVerdict();
+        router.replace('/trial/result');
+      } catch {
+        Alert.alert('Trial generation failed.', 'The court could not process Spotify evidence yet.');
+        router.replace('/connect');
+      }
     }, 4200);
     return () => {
       timers.forEach(clearTimeout);
