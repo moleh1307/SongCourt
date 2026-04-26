@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 
-import { ShareCardLabScreen } from './src/screens/ShareCardLabScreen';
+import { VerdictShareFlowScreen } from './src/screens/VerdictShareFlowScreen';
 
 export default function App() {
   return (
     <>
-      <ShareCardLabScreen />
+      <VerdictShareFlowScreen />
       <StatusBar style="dark" />
     </>
   );
