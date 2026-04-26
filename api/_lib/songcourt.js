@@ -57,7 +57,11 @@ const spotifyFetch = async (path, accessToken) => {
   const response = await fetch(`https://api.spotify.com/v1${path}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  if (!response.ok) throw new Error(`Spotify API failed: ${response.status}`);
+  if (!response.ok) {
+    const body = await response.text().catch(() => '');
+    throw new Error(`Spotify API failed: ${response.status}${body ? ` ${body}` : ''}`);
+  }
+  if (response.status === 204) return {};
   return response.json();
 };
 
