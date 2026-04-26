@@ -54,7 +54,8 @@ export const useTrialStore = create<TrialState>((set) => ({
       });
       await haptic(Haptics.ImpactFeedbackStyle.Heavy);
       return verdict;
-    } catch {
+    } catch (cause) {
+      console.warn('SongCourt trial generation failed', cause);
       const error = {
         code: 'trial_generation_failed',
         title: 'The evidence room is locked.',
