@@ -35,6 +35,24 @@ Use this blend:
 
 Do not default back to dark neon. Dark can be used, but only if the whole system still feels premium, minimal, and controlled.
 
+## Selected Direction
+
+The chosen direction is a deliberate hybrid:
+
+1. **Editorial Court for the app shell**
+   - Use for Splash, Onboarding, Connect Spotify, Trial Home, History, Profile, and most navigational UI.
+   - The shell should feel calm, premium, readable, trustworthy, and iOS-native.
+   - Lean on warm off-white, ink black, courtroom red, subtle paper texture, clean hierarchy, and restrained controls.
+
+2. **Pop Verdict for the reward/share layer**
+   - Use for Verdict Result, Reveal Sequence, Share Creator, and all exported share cards.
+   - The reward layer should feel colorful, dopamine-heavy, social-first, and instantly postable.
+   - Use bold accent fields, large numbers, playful verdict typography, crisp data graphics, and template-specific color systems.
+
+This hybrid is the product rule: **calm app, loud artifact**.
+
+Luxury Evidence can remain a reference for restraint, spacing, and premium finish, but it is not the primary direction.
+
 ## Core Principles
 
 ### 1. Share-Card-First
@@ -246,6 +264,15 @@ Goal: trust and ownership.
 
 ## Design System Direction
 
+### Direction Split
+
+The base product UI and exported social cards should not use exactly the same intensity.
+
+- App shell: Editorial Court.
+- Result reveal: Editorial Court structure with Pop Verdict reward effects.
+- Share cards: Pop Verdict as primary, with Editorial Court cleanliness.
+- Profile/settings/privacy: Editorial Court only.
+
 ### Palette
 
 Start from a neutral premium base:
@@ -393,4 +420,11 @@ Each direction should include:
 
 ## Next Step
 
-Generate the first three visual direction boards with detailed imagegen prompts, then choose one direction before frontend scaffolding.
+Create focused share-card concepts for the selected hybrid direction:
+
+1. `Verdict Poster` at `1080x1920`.
+2. `Court Receipt` at `1080x1350`.
+3. `Music DNA` at `1080x1920`.
+4. `Tag A Friend` at `1080x1920`.
+
+After reviewing those concepts, define the share-card layout system before frontend scaffolding.
