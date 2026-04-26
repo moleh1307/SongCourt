@@ -51,3 +51,5 @@ See [docs/spotify-production-setup.md](docs/spotify-production-setup.md).
 The frontend was intentionally removed and should be rebuilt from a clean design source of truth.
 
 Start with [docs/ui-design-direction.md](docs/ui-design-direction.md) before scaffolding any new app UI.
+
+Share-card production layout rules live in [docs/share-card-layout-system.md](docs/share-card-layout-system.md).

@@ -223,6 +223,8 @@ Goal: trust and ownership.
 
 Concept references are saved under `/docs/design-concepts/share-cards/`.
 
+Production layout rules are defined in `/docs/share-card-layout-system.md`.
+
 ### Required Formats
 
 1. **Verdict Poster**
@@ -422,11 +424,8 @@ Each direction should include:
 
 ## Next Step
 
-Create focused share-card concepts for the selected hybrid direction:
+Start the frontend rebuild from the share-card layout system:
 
-1. `Verdict Poster` at `1080x1920`.
-2. `Court Receipt` at `1080x1350`.
-3. `Music DNA` at `1080x1920`.
-4. `Tag A Friend` at `1080x1920`.
-
-After reviewing those concepts, define the share-card layout system before frontend scaffolding.
+1. scaffold a clean Expo/React Native app shell,
+2. implement fixed-size share-card render surfaces,
+3. build `Verdict Poster` and `Court Receipt` before the rest of the app visuals.
