@@ -45,3 +45,9 @@ npm run check
 ## API Contract
 
 See [docs/spotify-production-setup.md](docs/spotify-production-setup.md).
+
+## Frontend Rebuild
+
+The frontend was intentionally removed and should be rebuilt from a clean design source of truth.
+
+Start with [docs/ui-design-direction.md](docs/ui-design-direction.md) before scaffolding any new app UI.
