@@ -12,11 +12,13 @@ export function ShareCardCarousel({
   activeStyle,
   onStyleChange,
   cardRef,
+  showWatermark = true,
 }: {
   verdict: Verdict;
   activeStyle: ShareCardStyle;
   onStyleChange: (styleName: ShareCardStyle) => void;
   cardRef: RefObject<RNView | null>;
+  showWatermark?: boolean;
 }) {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
@@ -30,7 +32,13 @@ export function ShareCardCarousel({
             onPress={() => onStyleChange(styleName)}
             style={[styles.item, active && styles.itemActive]}
           >
-            <ShareCardPreview ref={active ? cardRef : undefined} verdict={verdict} styleName={styleName} defendant="Melih" />
+            <ShareCardPreview
+              ref={active ? cardRef : undefined}
+              verdict={verdict}
+              styleName={styleName}
+              defendant="Melih"
+              showWatermark={showWatermark}
+            />
             <Text style={[styles.label, active && styles.labelActive]}>{active ? `${styleName} selected` : styleName}</Text>
           </Pressable>
         );

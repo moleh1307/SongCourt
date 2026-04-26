@@ -11,6 +11,7 @@ import { SectionHeader } from '../../src/components/common/SectionHeader';
 import { colors } from '../../src/constants/colors';
 import { shareService } from '../../src/services/shareService';
 import { useHistoryStore } from '../../src/store/historyStore';
+import { useSettingsStore } from '../../src/store/settingsStore';
 import { useTrialStore } from '../../src/store/trialStore';
 import type { ShareCardStyle } from '../../src/types/verdict';
 
@@ -19,6 +20,7 @@ export default function ShareScreen() {
   const [styleName, setStyleName] = useState<ShareCardStyle>('neon');
   const currentVerdict = useTrialStore((state) => state.currentVerdict);
   const todayVerdict = useHistoryStore((state) => state.getTodayVerdict());
+  const watermarkEnabled = useSettingsStore((state) => state.watermarkEnabled);
   const verdict = currentVerdict ?? todayVerdict;
 
   if (!verdict) {
@@ -57,7 +59,13 @@ export default function ShareScreen() {
   return (
     <Screen>
       <SectionHeader eyebrow="CREATE SHARE CARD" title="Choose your evidence." />
-      <ShareCardCarousel verdict={verdict} activeStyle={styleName} onStyleChange={setStyleName} cardRef={cardRef} />
+      <ShareCardCarousel
+        verdict={verdict}
+        activeStyle={styleName}
+        onStyleChange={setStyleName}
+        cardRef={cardRef}
+        showWatermark={watermarkEnabled}
+      />
       <CourtCard accent={colors.hotPink}>
         <Text style={styles.caption}>{verdict.shareCaption}</Text>
       </CourtCard>

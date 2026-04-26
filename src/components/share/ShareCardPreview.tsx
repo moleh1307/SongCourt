@@ -8,6 +8,7 @@ type ShareCardPreviewProps = {
   verdict: Verdict;
   styleName: ShareCardStyle;
   defendant?: string;
+  showWatermark?: boolean;
 };
 
 const shareBackgrounds: Partial<Record<ShareCardStyle, number>> = {
@@ -17,7 +18,7 @@ const shareBackgrounds: Partial<Record<ShareCardStyle, number>> = {
 };
 
 export const ShareCardPreview = forwardRef<View, ShareCardPreviewProps>(
-  ({ verdict, styleName, defendant = 'Defendant' }, ref) => {
+  ({ verdict, styleName, defendant = 'Defendant', showWatermark = true }, ref) => {
     const aux = verdict.scores.find((score) => score.key === 'auxRisk')?.value ?? 0;
     const background = shareBackgrounds[styleName];
     const hasBackground = background !== undefined;
@@ -42,7 +43,7 @@ export const ShareCardPreview = forwardRef<View, ShareCardPreviewProps>(
         <Text style={[styles.label, darkText && styles.darkMuted]}>SENTENCE</Text>
         <Text style={[styles.body, darkText && styles.darkText]}>{verdict.sentence}</Text>
         <Text style={[styles.rarity, darkText && styles.redText]}>{verdict.rarity} - {verdict.raritySubtitle}</Text>
-        <Text style={[styles.watermark, darkText && styles.darkMuted]}>spotify wrapped got arrested</Text>
+        {showWatermark ? <Text style={[styles.watermark, darkText && styles.darkMuted]}>spotify wrapped got arrested</Text> : null}
       </View>
     );
 

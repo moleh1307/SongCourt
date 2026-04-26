@@ -52,7 +52,6 @@ export default function ProfileTab() {
 
       <CourtCard accent={colors.electricPurple}>
         <SettingRow label="Haptics" value={settings.hapticsEnabled} onValueChange={settings.toggleHaptics} />
-        <SettingRow label="Court Sound FX" value={settings.soundEnabled} onValueChange={settings.toggleSound} />
         <SettingRow label="Share Watermark" value={settings.watermarkEnabled} onValueChange={settings.toggleWatermark} />
       </CourtCard>
 
