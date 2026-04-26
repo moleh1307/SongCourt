@@ -1,5 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
+  Alert,
+  Image,
+  PixelRatio,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -7,19 +10,22 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import * as Sharing from 'expo-sharing';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { captureRef } from 'react-native-view-shot';
 
 import { BrandMark } from '../components/BrandMark';
-import { CourtReceiptCard } from '../components/share-cards/CourtReceiptCard';
 import { ScaledCardPreview } from '../components/share-cards/ScaledCardPreview';
-import { VerdictPosterCard } from '../components/share-cards/VerdictPosterCard';
-import { cardSizes, colors, spacing } from '../design/tokens';
+import {
+  getShareCardSize,
+  ShareCardSurface,
+  ShareTemplateId,
+} from '../components/share-cards/ShareCardSurface';
+import { colors, spacing } from '../design/tokens';
 import { sampleShareCard } from '../data/sampleShareCard';
 
-type TemplateId = 'poster' | 'receipt';
-
 const templates: Array<{
-  id: TemplateId;
+  id: ShareTemplateId;
   title: string;
   subtitle: string;
 }> = [
@@ -37,18 +43,67 @@ const templates: Array<{
 
 export function ShareCardLabScreen() {
   const { width } = useWindowDimensions();
-  const [activeTemplate, setActiveTemplate] = useState<TemplateId>('poster');
+  const exportRef = useRef<View>(null);
+  const [activeTemplate, setActiveTemplate] = useState<ShareTemplateId>('poster');
+  const [isSharing, setIsSharing] = useState(false);
+  const [lastExport, setLastExport] = useState<string | null>(null);
 
   const activeMeta = useMemo(
     () => templates.find((template) => template.id === activeTemplate) ?? templates[0],
     [activeTemplate],
   );
 
-  const cardWidth = activeTemplate === 'poster' ? cardSizes.story.width : cardSizes.feedPortrait.width;
-  const cardHeight = activeTemplate === 'poster' ? cardSizes.story.height : cardSizes.feedPortrait.height;
+  const { width: cardWidth, height: cardHeight } = getShareCardSize(activeTemplate);
+
+  async function shareActiveCard() {
+    if (!exportRef.current || isSharing) {
+      return;
+    }
+
+    try {
+      setIsSharing(true);
+
+      const canShare = await Sharing.isAvailableAsync();
+
+      if (!canShare) {
+        Alert.alert('Sharing unavailable', 'This device cannot open the native share sheet right now.');
+        return;
+      }
+
+      const uri = await captureRef(exportRef.current, {
+        format: 'png',
+        height: Math.round(cardHeight / PixelRatio.get()),
+        quality: 1,
+        result: 'tmpfile',
+        width: Math.round(cardWidth / PixelRatio.get()),
+      });
+
+      const dimensions = await getImageSize(uri);
+      setLastExport(`${dimensions.width} x ${dimensions.height} PNG`);
+      console.info('SongCourt share export', {
+        height: dimensions.height,
+        template: activeTemplate,
+        width: dimensions.width,
+      });
+
+      await Sharing.shareAsync(uri, {
+        dialogTitle: `Share ${activeMeta.title}`,
+        mimeType: 'image/png',
+        UTI: 'public.png',
+      });
+    } catch (error) {
+      Alert.alert('Share failed', error instanceof Error ? error.message : 'Unable to export this card.');
+    } finally {
+      setIsSharing(false);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <View pointerEvents="none" style={styles.exportHost}>
+        <ShareCardSurface ref={exportRef} payload={sampleShareCard} template={activeTemplate} />
+      </View>
+
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <BrandMark size="small" />
@@ -99,13 +154,28 @@ export function ShareCardLabScreen() {
           </View>
         </View>
 
+        <View style={styles.actions}>
+          <Pressable
+            accessibilityRole="button"
+            disabled={isSharing}
+            onPress={shareActiveCard}
+            style={({ pressed }) => [
+              styles.primaryAction,
+              pressed && !isSharing && styles.primaryActionPressed,
+              isSharing && styles.primaryActionDisabled,
+            ]}
+          >
+            <Text style={styles.primaryActionText}>{isSharing ? 'Preparing Card' : 'Share Test Export'}</Text>
+            <Text style={styles.primaryActionSubtext}>
+              Captures {cardWidth} x {cardHeight} PNG
+            </Text>
+          </Pressable>
+          {lastExport ? <Text style={styles.exportStatus}>Last export: {lastExport}</Text> : null}
+        </View>
+
         <View style={styles.previewShell}>
           <ScaledCardPreview width={cardWidth} height={cardHeight} maxWidth={width - spacing.lg * 2}>
-            {activeTemplate === 'poster' ? (
-              <VerdictPosterCard payload={sampleShareCard} />
-            ) : (
-              <CourtReceiptCard payload={sampleShareCard} />
-            )}
+            <ShareCardSurface payload={sampleShareCard} template={activeTemplate} />
           </ScaledCardPreview>
         </View>
 
@@ -129,10 +199,21 @@ export function ShareCardLabScreen() {
   );
 }
 
+function getImageSize(uri: string) {
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    Image.getSize(uri, (width, height) => resolve({ width, height }), reject);
+  });
+}
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.warmIvory,
+  },
+  exportHost: {
+    left: -1200,
+    position: 'absolute',
+    top: 0,
   },
   content: {
     paddingBottom: 48,
@@ -266,6 +347,42 @@ const styles = StyleSheet.create({
   previewShell: {
     alignItems: 'center',
     paddingTop: spacing.md,
+  },
+  actions: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+  },
+  primaryAction: {
+    alignItems: 'center',
+    backgroundColor: colors.courtRed,
+    borderRadius: 18,
+    paddingHorizontal: 18,
+    paddingVertical: 17,
+  },
+  primaryActionPressed: {
+    transform: [{ scale: 0.99 }],
+  },
+  primaryActionDisabled: {
+    opacity: 0.62,
+  },
+  primaryActionText: {
+    color: colors.receiptWhite,
+    fontSize: 16,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  primaryActionSubtext: {
+    color: '#FFD9DF',
+    fontSize: 12,
+    fontWeight: '800',
+    marginTop: 4,
+  },
+  exportStatus: {
+    color: colors.mutedInk,
+    fontSize: 12,
+    fontWeight: '800',
+    marginTop: 10,
+    textAlign: 'center',
   },
   notesPanel: {
     backgroundColor: colors.receiptWhite,
