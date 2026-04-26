@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { Alert, StyleSheet, Switch, Text, View } from 'react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
+import { DopamineStrip } from '../../src/components/common/DopamineStrip';
 import { NeonButton } from '../../src/components/common/NeonButton';
 import { Screen } from '../../src/components/common/Screen';
 import { SecondaryButton } from '../../src/components/common/SecondaryButton';
@@ -36,6 +37,13 @@ export default function ProfileTab() {
   return (
     <Screen>
       <SectionHeader eyebrow="DEFENDANT PROFILE" title={user?.displayName ?? 'Melih'} />
+      <DopamineStrip
+        items={[
+          { value: `${verdicts.length}`, label: 'trials', color: colors.neonGreen },
+          { value: `${highestAux}`, label: 'peak risk', color: colors.dangerRed },
+          { value: isDemoMode ? 'demo' : 'offline', label: 'court mode', color: colors.hotPink },
+        ]}
+      />
       <CourtCard accent={colors.neonGreen}>
         <Text style={styles.status}>{isDemoMode ? 'Demo Spotify connected' : 'Spotify not connected'}</Text>
         <View style={styles.statsRow}>

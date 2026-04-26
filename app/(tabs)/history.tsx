@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
+import { DopamineStrip } from '../../src/components/common/DopamineStrip';
 import { Screen } from '../../src/components/common/Screen';
 import { SectionHeader } from '../../src/components/common/SectionHeader';
 import { colors } from '../../src/constants/colors';
@@ -18,6 +19,13 @@ export default function HistoryTab() {
   return (
     <Screen>
       <SectionHeader eyebrow="YOUR MUSIC CRIMINAL RECORD" title="Every verdict you survived." />
+      <DopamineStrip
+        items={[
+          { value: `${streak}`, label: 'trial streak', color: colors.neonGreen },
+          { value: `${highestAux}`, label: 'peak risk', color: colors.dangerRed },
+          { value: verdicts.length ? `${verdicts.length}` : 'clean', label: 'case files', color: colors.hotPink },
+        ]}
+      />
       <View style={styles.stats}>
         <CourtCard accent={colors.neonGreen}>
           <Text style={styles.statValue}>{streak}</Text>

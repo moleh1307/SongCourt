@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
+import * as Haptics from 'expo-haptics';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { colors } from '../../constants/colors';
+import { useSettingsStore } from '../../store/settingsStore';
 
 type SecondaryButtonProps = {
   children: ReactNode;
@@ -9,8 +11,16 @@ type SecondaryButtonProps = {
 };
 
 export function SecondaryButton({ children, onPress, accessibilityLabel }: SecondaryButtonProps) {
+  const hapticsEnabled = useSettingsStore((state) => state.hapticsEnabled);
+  const press = () => {
+    if (hapticsEnabled) {
+      void Haptics.selectionAsync();
+    }
+    onPress();
+  };
+
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} style={styles.button}>
+    <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={press} style={styles.button}>
       <Text style={styles.label}>{children}</Text>
     </Pressable>
   );

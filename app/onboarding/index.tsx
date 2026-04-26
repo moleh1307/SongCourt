@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { FileWarning, Gauge, Stamp } from 'lucide-react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
+import { DopamineStrip } from '../../src/components/common/DopamineStrip';
 import { NeonButton } from '../../src/components/common/NeonButton';
 import { Screen } from '../../src/components/common/Screen';
 import { colors } from '../../src/constants/colors';
@@ -10,18 +11,24 @@ import { useAuthStore } from '../../src/store/authStore';
 
 const pages = [
   {
-    title: 'Your music taste has been reported.',
-    text: 'SongCourt checks your listening history and delivers a daily verdict.',
+    title: 'Your music taste is evidence.',
+    text: 'Every replay, skip, and guilty artist becomes a court file.',
+    reward: 'Daily trial',
+    trigger: 'New verdict',
     Icon: FileWarning,
   },
   {
-    title: 'Get your Aux Risk score.',
-    text: 'Sad repeats, genre chaos, guilty artists, and suspicious behavior.',
+    title: 'Get the score your group chat deserves.',
+    text: 'Aux Risk turns your listening chaos into one brutal number.',
+    reward: 'Aux Risk',
+    trigger: 'Top 1%',
     Icon: Gauge,
   },
   {
-    title: 'Share the verdict.',
-    text: 'Post your daily trial card and compare with friends.',
+    title: 'Post the receipt before they do.',
+    text: 'Make the verdict feel like a collectible, not a screenshot.',
+    reward: 'Story card',
+    trigger: 'Share bait',
     Icon: Stamp,
   },
 ];
@@ -51,6 +58,12 @@ export default function OnboardingScreen() {
         </View>
         <Text adjustsFontSizeToFit numberOfLines={3} style={styles.title}>{current.title}</Text>
         <Text style={styles.text}>{current.text}</Text>
+        <DopamineStrip
+          items={[
+            { value: current.reward, label: 'reward loop', color: colors.neonGreen },
+            { value: current.trigger, label: 'viral hook', color: colors.hotPink },
+          ]}
+        />
       </CourtCard>
       <View style={styles.dots}>
         {pages.map((item, index) => (

@@ -1,6 +1,7 @@
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { Cable, Crown, Flame, ShieldAlert, Users } from 'lucide-react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
+import { DopamineStrip } from '../../src/components/common/DopamineStrip';
 import { NeonButton } from '../../src/components/common/NeonButton';
 import { Screen } from '../../src/components/common/Screen';
 import { SectionHeader } from '../../src/components/common/SectionHeader';
@@ -37,6 +38,13 @@ export default function FriendsTab() {
   return (
     <Screen>
       <SectionHeader eyebrow="AUX COMPATIBILITY COURT" title="Can your taste survive a car ride?" />
+      <DopamineStrip
+        items={[
+          { value: '91', label: 'best match', color: colors.neonGreen },
+          { value: '3', label: 'co-defendants', color: colors.hotPink },
+          { value: 'invite', label: 'next loop', color: colors.warningYellow },
+        ]}
+      />
       <CourtCard accent={colors.electricPurple}>
         <View style={styles.visual}>
           <Users color={colors.hotPink} size={56} />

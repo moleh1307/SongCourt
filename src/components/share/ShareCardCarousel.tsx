@@ -1,7 +1,9 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import type { RefObject } from 'react';
 import type { View as RNView } from 'react-native';
 import { colors } from '../../constants/colors';
+import { useSettingsStore } from '../../store/settingsStore';
 import type { ShareCardStyle, Verdict } from '../../types/verdict';
 import { ShareCardPreview } from './ShareCardPreview';
 
@@ -20,6 +22,14 @@ export function ShareCardCarousel({
   cardRef: RefObject<RNView | null>;
   showWatermark?: boolean;
 }) {
+  const hapticsEnabled = useSettingsStore((state) => state.hapticsEnabled);
+  const selectStyle = (style: ShareCardStyle) => {
+    if (hapticsEnabled) {
+      void Haptics.selectionAsync();
+    }
+    onStyleChange(style);
+  };
+
   return (
     <View style={styles.wrap}>
       <View style={styles.selectorRow}>
@@ -30,7 +40,7 @@ export function ShareCardCarousel({
               accessibilityRole="button"
               accessibilityLabel={`Select ${styleName} share card`}
               key={styleName}
-              onPress={() => onStyleChange(styleName)}
+              onPress={() => selectStyle(styleName)}
               style={[styles.selectorChip, active && styles.selectorChipActive]}
             >
               <Text style={[styles.selectorText, active && styles.selectorTextActive]}>{styleName}</Text>

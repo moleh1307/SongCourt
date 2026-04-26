@@ -4,6 +4,7 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import type { View as RNView } from 'react-native';
 import { ShareCardCarousel } from '../../src/components/share/ShareCardCarousel';
 import { CourtCard } from '../../src/components/common/CourtCard';
+import { DopamineStrip } from '../../src/components/common/DopamineStrip';
 import { NeonButton } from '../../src/components/common/NeonButton';
 import { Screen } from '../../src/components/common/Screen';
 import { SecondaryButton } from '../../src/components/common/SecondaryButton';
@@ -58,7 +59,15 @@ export default function ShareScreen() {
 
   return (
     <Screen>
-      <SectionHeader eyebrow="CREATE SHARE CARD" title="Choose your evidence." />
+      <SectionHeader eyebrow="CREATE SHARE CARD" title="Make it screenshot-worthy." />
+      <DopamineStrip
+        items={[
+          { value: styleName, label: 'card flavor', color: colors.neonGreen },
+          { value: watermarkEnabled ? 'branded' : 'clean', label: 'watermark', color: colors.hotPink },
+          { value: '9:16', label: 'story ready', color: colors.warningYellow },
+        ]}
+      />
+      <NeonButton onPress={share}>Share This Verdict</NeonButton>
       <ShareCardCarousel
         verdict={verdict}
         activeStyle={styleName}
@@ -67,9 +76,9 @@ export default function ShareScreen() {
         showWatermark={watermarkEnabled}
       />
       <CourtCard accent={colors.hotPink}>
+        <Text style={styles.kicker}>Caption bait</Text>
         <Text style={styles.caption}>{verdict.shareCaption}</Text>
       </CourtCard>
-      <NeonButton onPress={share}>Share</NeonButton>
       <SecondaryButton onPress={save}>Save Image</SecondaryButton>
       <SecondaryButton onPress={copy}>Copy Caption</SecondaryButton>
       <SecondaryButton onPress={() => router.back()}>Back to Verdict</SecondaryButton>
@@ -78,5 +87,6 @@ export default function ShareScreen() {
 }
 
 const styles = StyleSheet.create({
+  kicker: { color: colors.hotPink, fontSize: 11, fontWeight: '900', textTransform: 'uppercase', marginBottom: 8 },
   caption: { color: colors.text, fontSize: 16, fontWeight: '800' },
 });

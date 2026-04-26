@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { CheckCircle2, Gavel } from 'lucide-react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
+import { DopamineStrip } from '../../src/components/common/DopamineStrip';
 import { NeonButton } from '../../src/components/common/NeonButton';
 import { Screen } from '../../src/components/common/Screen';
 import { SecondaryButton } from '../../src/components/common/SecondaryButton';
@@ -34,6 +35,13 @@ export default function TrialTab() {
       <Text style={styles.subtext}>
         {spotifyConnected ? 'Your recent listening history is ready for trial.' : 'No evidence yet. Connect Spotify so the court can begin.'}
       </Text>
+      <DopamineStrip
+        items={[
+          { value: todayVerdict ? '1 sealed' : 'live', label: 'daily case', color: colors.neonGreen },
+          { value: 'story-ready', label: 'share payoff', color: colors.hotPink },
+          { value: '94 max', label: 'demo risk', color: colors.warningYellow },
+        ]}
+      />
 
       {!spotifyConnected ? (
         <CourtCard accent={colors.neonGreen}>
@@ -53,6 +61,8 @@ export default function TrialTab() {
           <View style={styles.gavelWrap}>
             <Gavel color={colors.neonGreen} size={56} />
           </View>
+          <Text style={styles.bigHook}>One tap. One brutal verdict.</Text>
+          <Text style={styles.microHook}>Built for the moment someone asks who gets aux.</Text>
           <NeonButton onPress={startTrial} accessibilityLabel="Put me on trial">PUT ME ON TRIAL</NeonButton>
           <View style={styles.chips}>
             {['Recent tracks loaded', 'Top artists ready', 'Replay behavior detected'].map((label) => (
@@ -77,6 +87,8 @@ const styles = StyleSheet.create({
   subtext: { color: colors.muted, fontSize: 16, fontWeight: '700' },
   title: { color: colors.text, fontSize: 24, fontWeight: '900', textTransform: 'uppercase' },
   gavelWrap: { alignItems: 'center', marginBottom: 18 },
+  bigHook: { color: colors.text, fontSize: 24, fontWeight: '900', textTransform: 'uppercase', textAlign: 'center', marginBottom: 6 },
+  microHook: { color: colors.muted, fontSize: 14, fontWeight: '800', textAlign: 'center', marginBottom: 16 },
   chips: { gap: 10, marginTop: 18 },
   chip: { flexDirection: 'row', gap: 8, alignItems: 'center', backgroundColor: colors.deepCard, padding: 12, borderRadius: 8 },
   chipText: { color: colors.text, fontSize: 13, fontWeight: '800' },

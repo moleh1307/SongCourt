@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
+import * as Haptics from 'expo-haptics';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { colors } from '../../constants/colors';
+import { useSettingsStore } from '../../store/settingsStore';
 
 type NeonButtonProps = {
   children: ReactNode;
@@ -10,12 +12,20 @@ type NeonButtonProps = {
 };
 
 export function NeonButton({ children, onPress, variant = 'primary', accessibilityLabel }: NeonButtonProps) {
+  const hapticsEnabled = useSettingsStore((state) => state.hapticsEnabled);
   const color = variant === 'danger' ? colors.dangerRed : variant === 'purple' ? colors.electricPurple : colors.neonGreen;
+  const press = () => {
+    if (hapticsEnabled) {
+      void Haptics.impactAsync(variant === 'primary' ? Haptics.ImpactFeedbackStyle.Heavy : Haptics.ImpactFeedbackStyle.Medium);
+    }
+    onPress();
+  };
+
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      onPress={onPress}
+      onPress={press}
       style={({ pressed }) => [styles.button, { backgroundColor: color, shadowColor: color }, pressed && styles.pressed]}
     >
       <Text style={styles.label}>{children}</Text>
