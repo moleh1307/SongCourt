@@ -1,0 +1,304 @@
+import { useMemo, useState } from 'react';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { BrandMark } from '../components/BrandMark';
+import { CourtReceiptCard } from '../components/share-cards/CourtReceiptCard';
+import { ScaledCardPreview } from '../components/share-cards/ScaledCardPreview';
+import { VerdictPosterCard } from '../components/share-cards/VerdictPosterCard';
+import { cardSizes, colors, spacing } from '../design/tokens';
+import { sampleShareCard } from '../data/sampleShareCard';
+
+type TemplateId = 'poster' | 'receipt';
+
+const templates: Array<{
+  id: TemplateId;
+  title: string;
+  subtitle: string;
+}> = [
+  {
+    id: 'poster',
+    title: 'Verdict Poster',
+    subtitle: '1080 x 1920 story',
+  },
+  {
+    id: 'receipt',
+    title: 'Court Receipt',
+    subtitle: '1080 x 1350 feed',
+  },
+];
+
+export function ShareCardLabScreen() {
+  const { width } = useWindowDimensions();
+  const [activeTemplate, setActiveTemplate] = useState<TemplateId>('poster');
+
+  const activeMeta = useMemo(
+    () => templates.find((template) => template.id === activeTemplate) ?? templates[0],
+    [activeTemplate],
+  );
+
+  const cardWidth = activeTemplate === 'poster' ? cardSizes.story.width : cardSizes.feedPortrait.width;
+  const cardHeight = activeTemplate === 'poster' ? cardSizes.story.height : cardSizes.feedPortrait.height;
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <BrandMark size="small" />
+          <View style={styles.statusPill}>
+            <Text style={styles.statusText}>Design Lab</Text>
+          </View>
+        </View>
+
+        <View style={styles.hero}>
+          <Text style={styles.eyebrow}>Share-card-first rebuild</Text>
+          <Text style={styles.title}>Calm app shell. Loud artifact.</Text>
+          <Text style={styles.copy}>
+            First production surfaces for the selected Editorial Court plus Pop Verdict direction.
+          </Text>
+        </View>
+
+        <View style={styles.segmented}>
+          {templates.map((template) => {
+            const selected = template.id === activeTemplate;
+
+            return (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ selected }}
+                key={template.id}
+                onPress={() => setActiveTemplate(template.id)}
+                style={[styles.segment, selected && styles.segmentSelected]}
+              >
+                <Text style={[styles.segmentTitle, selected && styles.segmentTitleSelected]}>{template.title}</Text>
+                <Text style={[styles.segmentSubtitle, selected && styles.segmentSubtitleSelected]}>
+                  {template.subtitle}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        <View style={styles.previewHeader}>
+          <View>
+            <Text style={styles.previewLabel}>{activeMeta.title}</Text>
+            <Text style={styles.previewSize}>
+              Fixed render surface: {cardWidth} x {cardHeight}
+            </Text>
+          </View>
+          <View style={styles.scoreBadge}>
+            <Text style={styles.scoreBadgeLabel}>Aux Risk</Text>
+            <Text style={styles.scoreBadgeValue}>{sampleShareCard.auxRisk}</Text>
+          </View>
+        </View>
+
+        <View style={styles.previewShell}>
+          <ScaledCardPreview width={cardWidth} height={cardHeight} maxWidth={width - spacing.lg * 2}>
+            {activeTemplate === 'poster' ? (
+              <VerdictPosterCard payload={sampleShareCard} />
+            ) : (
+              <CourtReceiptCard payload={sampleShareCard} />
+            )}
+          </ScaledCardPreview>
+        </View>
+
+        <View style={styles.notesPanel}>
+          <Text style={styles.notesTitle}>Production rules locked</Text>
+          <View style={styles.noteRow}>
+            <Text style={styles.noteIndex}>01</Text>
+            <Text style={styles.noteText}>Cards render at exact social export dimensions, then scale only for preview.</Text>
+          </View>
+          <View style={styles.noteRow}>
+            <Text style={styles.noteIndex}>02</Text>
+            <Text style={styles.noteText}>Dynamic text has fixed zones, max lines, and shrink behavior.</Text>
+          </View>
+          <View style={styles.noteRow}>
+            <Text style={styles.noteIndex}>03</Text>
+            <Text style={styles.noteText}>Verdict Poster and Court Receipt are the first production references.</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.warmIvory,
+  },
+  content: {
+    paddingBottom: 48,
+  },
+  header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+  },
+  statusPill: {
+    backgroundColor: colors.ink,
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+  },
+  statusText: {
+    color: colors.warmIvory,
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  hero: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+  },
+  eyebrow: {
+    color: colors.courtRed,
+    fontSize: 13,
+    fontWeight: '900',
+    letterSpacing: 1.8,
+    marginBottom: spacing.sm,
+    textTransform: 'uppercase',
+  },
+  title: {
+    color: colors.ink,
+    fontSize: 38,
+    fontWeight: '900',
+    letterSpacing: 0,
+    lineHeight: 41,
+  },
+  copy: {
+    color: colors.mutedInk,
+    fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 23,
+    marginTop: spacing.sm,
+    maxWidth: 330,
+  },
+  segmented: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+  },
+  segment: {
+    backgroundColor: colors.receiptWhite,
+    borderColor: '#D8CCB8',
+    borderRadius: 16,
+    borderWidth: 1,
+    flex: 1,
+    minHeight: 82,
+    padding: 14,
+  },
+  segmentSelected: {
+    backgroundColor: colors.ink,
+    borderColor: colors.ink,
+  },
+  segmentTitle: {
+    color: colors.ink,
+    fontSize: 15,
+    fontWeight: '900',
+    lineHeight: 20,
+  },
+  segmentTitleSelected: {
+    color: colors.warmIvory,
+  },
+  segmentSubtitle: {
+    color: colors.mutedInk,
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 4,
+  },
+  segmentSubtitleSelected: {
+    color: colors.paperTan,
+  },
+  previewHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+  },
+  previewLabel: {
+    color: colors.ink,
+    fontSize: 22,
+    fontWeight: '900',
+  },
+  previewSize: {
+    color: colors.mutedInk,
+    fontSize: 13,
+    fontWeight: '700',
+    marginTop: 4,
+  },
+  scoreBadge: {
+    alignItems: 'center',
+    backgroundColor: colors.lime,
+    borderColor: colors.ink,
+    borderRadius: 18,
+    borderWidth: 1,
+    minWidth: 72,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    transform: [{ rotate: '-2deg' }],
+  },
+  scoreBadgeLabel: {
+    color: colors.ink,
+    fontSize: 9,
+    fontWeight: '900',
+    letterSpacing: 0.7,
+    textTransform: 'uppercase',
+  },
+  scoreBadgeValue: {
+    color: colors.ink,
+    fontSize: 26,
+    fontWeight: '900',
+    lineHeight: 29,
+  },
+  previewShell: {
+    alignItems: 'center',
+    paddingTop: spacing.md,
+  },
+  notesPanel: {
+    backgroundColor: colors.receiptWhite,
+    borderColor: '#D8CCB8',
+    borderRadius: 18,
+    borderWidth: 1,
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.xl,
+    padding: spacing.md,
+  },
+  notesTitle: {
+    color: colors.ink,
+    fontSize: 17,
+    fontWeight: '900',
+    marginBottom: spacing.md,
+  },
+  noteRow: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingVertical: 9,
+  },
+  noteIndex: {
+    color: colors.courtRed,
+    fontSize: 13,
+    fontWeight: '900',
+    width: 26,
+  },
+  noteText: {
+    color: colors.mutedInk,
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 20,
+  },
+});

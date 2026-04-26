@@ -1,9 +1,26 @@
 {
   "name": "songcourt",
   "version": "1.0.0",
-  "description": "SongCourt backend API for Spotify OAuth and music snapshot normalization.",
+  "description": "SongCourt iPhone app and backend API for Spotify OAuth and music snapshot normalization.",
+  "main": "index.ts",
   "scripts": {
-    "check": "find api -type f -name '*.js' -print0 | xargs -0 -n1 node --check"
+    "start": "expo start",
+    "ios": "expo start --ios",
+    "android": "expo start --android",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && find api -type f -name '*.js' -print0 | xargs -0 -n1 node --check"
+  },
+  "dependencies": {
+    "expo": "~54.0.33",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-safe-area-context": "~5.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.1.0",
+    "typescript": "~5.9.2"
   },
   "engines": {
     "node": ">=20"
