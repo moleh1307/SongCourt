@@ -6,7 +6,7 @@ export type ApiRequestOptions<Body = unknown> = {
   token?: string;
 };
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export class ApiClientError extends Error {
   constructor(
@@ -42,6 +42,9 @@ export const apiClient = {
 
 export const futureApiEndpoints = {
   spotifyStart: '/auth/spotify/start',
+  spotifySession: '/auth/spotify/session',
+  spotifyDisconnect: '/auth/spotify/disconnect',
+  spotifySnapshot: '/spotify/snapshot',
   spotifyCallback: '/auth/spotify/callback',
   me: '/me',
   generateTrial: '/trial/generate',

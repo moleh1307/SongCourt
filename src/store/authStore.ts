@@ -6,11 +6,14 @@ import { secureJsonStorage } from './persist';
 
 type AuthState = {
   user?: User;
+  authToken?: string;
   hasCompletedOnboarding: boolean;
   spotifyConnected: boolean;
   isDemoMode: boolean;
   setUser: (user: User) => void;
   completeOnboarding: () => void;
+  startSpotifyLogin: () => Promise<void>;
+  completeSpotifyLogin: (ticket: string, state?: string) => Promise<void>;
   connectSpotifyDemo: () => Promise<void>;
   disconnectSpotify: () => void;
 };
@@ -23,11 +26,20 @@ export const useAuthStore = create<AuthState>()(
       isDemoMode: false,
       setUser: (user) => set({ user, spotifyConnected: user.spotifyConnected }),
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
-      connectSpotifyDemo: async () => {
-        const user = await spotifyService.connect();
-        set({ user, spotifyConnected: true, isDemoMode: true, hasCompletedOnboarding: true });
+      startSpotifyLogin: () => spotifyService.startLogin(),
+      completeSpotifyLogin: async (ticket, state) => {
+        const { user, token } = await spotifyService.completeLogin(ticket, state);
+        set({ user, authToken: token, spotifyConnected: true, isDemoMode: false, hasCompletedOnboarding: true });
       },
-      disconnectSpotify: () => set({ user: undefined, spotifyConnected: false, isDemoMode: false }),
+      connectSpotifyDemo: async () => {
+        const user = await spotifyService.connectDemo();
+        set({ user, authToken: undefined, spotifyConnected: true, isDemoMode: true, hasCompletedOnboarding: true });
+      },
+      disconnectSpotify: () => {
+        const token = useAuthStore.getState().authToken;
+        void spotifyService.disconnect(token).catch(() => undefined);
+        set({ user: undefined, authToken: undefined, spotifyConnected: false, isDemoMode: false });
+      },
     }),
     { name: 'songcourt-auth', storage: secureJsonStorage },
   ),

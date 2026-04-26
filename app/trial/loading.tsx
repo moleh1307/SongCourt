@@ -11,22 +11,25 @@ const scannerBackground = require('../../assets/generated/trial-scanner-bg.png')
 
 export default function TrialLoadingScreen() {
   const connectSpotifyDemo = useAuthStore((state) => state.connectSpotifyDemo);
-  const generateDemoVerdict = useTrialStore((state) => state.generateDemoVerdict);
+  const spotifyConnected = useAuthStore((state) => state.spotifyConnected);
+  const generateVerdict = useTrialStore((state) => state.generateVerdict);
   const stage = useTrialStore((state) => state.generationStage);
   const setGenerationStage = useTrialStore((state) => state.setGenerationStage);
 
   useEffect(() => {
     const timers = [0, 1, 2, 3].map((value) => setTimeout(() => setGenerationStage(value), value * 900));
     const run = setTimeout(async () => {
-      await connectSpotifyDemo();
-      await generateDemoVerdict();
+      if (!spotifyConnected) {
+        await connectSpotifyDemo();
+      }
+      await generateVerdict();
       router.replace('/trial/result');
     }, 4200);
     return () => {
       timers.forEach(clearTimeout);
       clearTimeout(run);
     };
-  }, [connectSpotifyDemo, generateDemoVerdict, setGenerationStage]);
+  }, [connectSpotifyDemo, generateVerdict, setGenerationStage, spotifyConnected]);
 
   return (
     <ImageBackground source={scannerBackground} resizeMode="cover" style={styles.root}>

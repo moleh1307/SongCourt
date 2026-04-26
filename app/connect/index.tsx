@@ -1,19 +1,31 @@
 import { router } from 'expo-router';
 import { Lock, Music2 } from 'lucide-react-native';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
 import { NeonButton } from '../../src/components/common/NeonButton';
 import { Screen } from '../../src/components/common/Screen';
 import { SecondaryButton } from '../../src/components/common/SecondaryButton';
 import { colors } from '../../src/constants/colors';
+import { spotifyService } from '../../src/services/spotifyService';
 import { useAuthStore } from '../../src/store/authStore';
 
 export default function ConnectScreen() {
+  const startSpotifyLogin = useAuthStore((state) => state.startSpotifyLogin);
   const connectSpotifyDemo = useAuthStore((state) => state.connectSpotifyDemo);
 
   const connect = async () => {
-    await connectSpotifyDemo();
-    router.replace('/(tabs)/trial');
+    if (!spotifyService.isConfigured()) {
+      Alert.alert(
+        'Spotify setup needed.',
+        `Add EXPO_PUBLIC_API_BASE_URL. The backend will use ${spotifyService.getReturnUri()} to return to the app. Demo trial still works.`,
+      );
+      return;
+    }
+    try {
+      await startSpotifyLogin();
+    } catch {
+      Alert.alert('Spotify login failed.', 'The courtroom could not open Spotify login.');
+    }
   };
 
   const preview = async () => {
