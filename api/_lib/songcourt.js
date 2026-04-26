@@ -18,6 +18,22 @@ const base64url = (input) => Buffer.from(input).toString('base64url');
 const unbase64url = (input) => Buffer.from(input, 'base64url').toString('utf8');
 
 const signingSecret = () => requireEnv('SONGCOURT_TOKEN_SECRET');
+const secretKey = () => crypto.createHash('sha256').update(signingSecret()).digest();
+
+const encryptSecret = (value) => {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', secretKey(), iv);
+  const encrypted = Buffer.concat([cipher.update(value, 'utf8'), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return `${iv.toString('base64url')}.${tag.toString('base64url')}.${encrypted.toString('base64url')}`;
+};
+
+const decryptSecret = (value) => {
+  const [iv, tag, encrypted] = String(value ?? '').split('.').map((part) => Buffer.from(part, 'base64url'));
+  const decipher = crypto.createDecipheriv('aes-256-gcm', secretKey(), iv);
+  decipher.setAuthTag(tag);
+  return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString('utf8');
+};
 
 const signToken = (payload, ttlSeconds) => {
   const body = { ...payload, exp: Math.floor(Date.now() / 1000) + ttlSeconds };
@@ -119,6 +135,8 @@ const artistGenresForTracks = async (tracks, accessToken) => {
 
 module.exports = {
   exchangeCode,
+  decryptSecret,
+  encryptSecret,
   json,
   mapArtist,
   mapTrack,

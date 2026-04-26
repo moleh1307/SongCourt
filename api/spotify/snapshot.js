@@ -1,5 +1,6 @@
 const {
   artistGenresForTracks,
+  decryptSecret,
   json,
   mapArtist,
   mapTrack,
@@ -12,7 +13,7 @@ module.exports = async (req, res) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
     const session = verifyToken(token, 'session');
-    const refreshed = await refreshAccessToken(session.refreshToken);
+    const refreshed = await refreshAccessToken(decryptSecret(session.refreshTokenEnc));
     const accessToken = refreshed.access_token;
     const [recent, topTracks, topArtists] = await Promise.all([
       spotifyFetch('/me/player/recently-played?limit=30', accessToken),

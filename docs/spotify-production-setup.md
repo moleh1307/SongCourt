@@ -42,7 +42,7 @@ SONGCOURT_TOKEN_SECRET=<long-random-secret>
 SONGCOURT_ALLOWED_RETURN_URI=songcourt://auth/spotify/callback
 ```
 
-The included backend is stateless: it signs SongCourt API tokens containing the Spotify refresh token. That is acceptable for a fast MVP if `SONGCOURT_TOKEN_SECRET` is strong and private; for production at scale, move refresh tokens into a database and keep only opaque session ids in app tokens.
+The included backend is stateless: it encrypts the Spotify refresh token inside signed SongCourt API tokens using `SONGCOURT_TOKEN_SECRET`. That is acceptable for a fast MVP if `SONGCOURT_TOKEN_SECRET` is strong and private; for production at scale, move refresh tokens into a database and keep only opaque session ids in app tokens.
 
 ## Backend Contract
 
