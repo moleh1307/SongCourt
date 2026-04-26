@@ -1,5 +1,6 @@
+import { useEffect, useMemo, useState } from 'react';
 import { router } from 'expo-router';
-import { CheckCircle2, Gavel, Music2, ShieldCheck } from 'lucide-react-native';
+import { CheckCircle2, Clock3, Gavel, Music2, ShieldCheck, Trophy } from 'lucide-react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
 import { DopamineStrip } from '../../src/components/common/DopamineStrip';
@@ -10,14 +11,45 @@ import { SectionHeader } from '../../src/components/common/SectionHeader';
 import { colors } from '../../src/constants/colors';
 import { useAuthStore } from '../../src/store/authStore';
 import { useHistoryStore } from '../../src/store/historyStore';
+import { useRewardStore } from '../../src/store/rewardStore';
 import { useTrialStore } from '../../src/store/trialStore';
-import { formatDisplayDate } from '../../src/utils/date';
+import { formatDisplayDate, todayKey } from '../../src/utils/date';
+import { getAuxRisk, getRankProgress, getVerdictCaseNumber, getVerdictChallenge } from '../../src/utils/verdictRewards';
+
+const getCountdownToMidnight = () => {
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(24, 0, 0, 0);
+  const minutes = Math.max(0, Math.ceil((next.getTime() - now.getTime()) / 60000));
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  return `${hours}h ${remainder}m`;
+};
 
 export default function TrialTab() {
   const spotifyConnected = useAuthStore((state) => state.spotifyConnected);
+  const verdicts = useHistoryStore((state) => state.verdicts);
   const todayVerdict = useHistoryStore((state) => state.getTodayVerdict());
+  const historyStreak = useHistoryStore((state) => state.getStreak());
+  const rewardXp = useRewardStore((state) => state.xp);
+  const rewardRank = useRewardStore((state) => state.rank);
+  const rewardStreak = useRewardStore((state) => state.getStreak());
+  const weeklyCaseCount = useRewardStore((state) => state.getWeeklyCaseCount());
   const setCurrentVerdict = useTrialStore((state) => state.setCurrentVerdict);
-  const todayAux = todayVerdict?.scores.find((score) => score.key === 'auxRisk')?.value ?? 0;
+  const todayAux = todayVerdict ? getAuxRisk(todayVerdict) : 0;
+  const streak = Math.max(historyStreak, rewardStreak);
+  const rankProgress = getRankProgress(rewardXp);
+  const [countdown, setCountdown] = useState(getCountdownToMidnight());
+  const yesterdayVerdict = useMemo(
+    () => verdicts.find((verdict) => verdict.date < todayKey()),
+    [verdicts],
+  );
+  const activeChallenge = todayVerdict ? getVerdictChallenge(todayVerdict) : undefined;
+
+  useEffect(() => {
+    const timer = setInterval(() => setCountdown(getCountdownToMidnight()), 30000);
+    return () => clearInterval(timer);
+  }, []);
 
   const startTrial = () => {
     router.push('/trial/loading');
@@ -32,7 +64,7 @@ export default function TrialTab() {
 
   return (
     <Screen>
-      <SectionHeader eyebrow="CASE #10247" title="Today's trial." />
+      <SectionHeader eyebrow={todayVerdict ? getVerdictCaseNumber(todayVerdict) : 'DAILY CASE'} title="Today's trial." />
 
       {!spotifyConnected ? (
         <CourtCard accent={colors.dangerRed}>
@@ -45,7 +77,7 @@ export default function TrialTab() {
       ) : todayVerdict ? (
         <>
           <CourtCard accent={colors.dangerRed}>
-            <TrialDial status="Not tried today" Icon={ShieldCheck} sealed />
+            <TrialDial status="Verdict sealed" Icon={ShieldCheck} sealed caseNumber={getVerdictCaseNumber(todayVerdict)} />
           </CourtCard>
           <CourtCard quiet>
             <Text style={styles.compactDate}>{formatDisplayDate(todayVerdict.date)}</Text>
@@ -74,11 +106,51 @@ export default function TrialTab() {
 
       <DopamineStrip
         items={[
-          { value: todayVerdict ? 'sealed' : 'live', label: 'daily case', color: colors.neonGreen },
-          { value: spotifyConnected ? 'linked' : 'locked', label: 'spotify', color: spotifyConnected ? colors.hotPink : colors.muted },
-          { value: '9:16', label: 'share card', color: colors.warningYellow },
+          { value: `${streak}`, label: 'day streak', color: colors.neonGreen },
+          { value: rewardRank, label: 'court rank', color: colors.hotPink },
+          { value: `${weeklyCaseCount}/7`, label: 'week cases', color: colors.warningYellow },
         ]}
       />
+
+      <CourtCard accent={colors.electricPurple}>
+        <View style={styles.loopHeader}>
+          <View style={styles.loopIcon}>
+            <Trophy color={colors.warningYellow} size={23} />
+          </View>
+          <View style={styles.loopBody}>
+            <Text style={styles.loopTitle}>{rewardRank}</Text>
+            <Text style={styles.loopCopy}>
+              {rankProgress.next ? `${rankProgress.xpIntoRank}/${rankProgress.xpForNext} XP to ${rankProgress.next}` : 'Max court rank reached'}
+            </Text>
+          </View>
+          <Text style={styles.loopXp}>{rewardXp} XP</Text>
+        </View>
+        <View style={styles.progressTrack}>
+          <View style={[styles.progressFill, { width: `${Math.round(rankProgress.progress * 100)}%` }]} />
+        </View>
+      </CourtCard>
+
+      <View style={styles.returnGrid}>
+        <View style={styles.returnTile}>
+          <Clock3 color={colors.neonGreen} size={22} />
+          <Text style={styles.returnTitle}>Next verdict</Text>
+          <Text style={styles.returnValue}>{countdown}</Text>
+        </View>
+        <View style={styles.returnTile}>
+          <Text style={styles.returnTitle}>Yesterday</Text>
+          <Text numberOfLines={2} style={styles.returnValue}>
+            {yesterdayVerdict ? `${getAuxRisk(yesterdayVerdict)} risk` : 'No file'}
+          </Text>
+        </View>
+      </View>
+
+      <CourtCard accent={colors.warningYellow}>
+        <Text style={styles.docketTitle}>Today's challenge</Text>
+        <Text style={styles.challengeTitle}>{activeChallenge?.title ?? 'Open a case file'}</Text>
+        <Text style={styles.challengeCopy}>
+          {activeChallenge?.description ?? 'Generate a verdict to unlock a challenge and a badge.'}
+        </Text>
+      </CourtCard>
 
       <CourtCard quiet>
         <Text style={styles.docketTitle}>Court docket</Text>
@@ -93,14 +165,14 @@ export default function TrialTab() {
   );
 }
 
-function TrialDial({ status, Icon, sealed }: { status: string; Icon: typeof Gavel; sealed?: boolean }) {
+function TrialDial({ status, Icon, sealed, caseNumber = 'CASE #10247' }: { status: string; Icon: typeof Gavel; sealed?: boolean; caseNumber?: string }) {
   return (
     <View style={styles.trialBoard}>
       <View style={styles.heroTop}>
         <View style={styles.caseSeal}>
           <Icon color={sealed ? colors.dangerRed : colors.warningYellow} size={28} />
         </View>
-        <Text style={styles.caseNumber}>CASE #10247</Text>
+        <Text style={styles.caseNumber}>{caseNumber}</Text>
       </View>
       <View style={styles.dialOuter}>
         <View style={styles.dialMid}>
@@ -195,4 +267,36 @@ const styles = StyleSheet.create({
   compactBody: { flex: 1 },
   compactTitle: { color: colors.text, fontSize: 22, lineHeight: 26, fontWeight: '900' },
   compactCopy: { color: colors.muted, fontSize: 13, fontWeight: '800', marginTop: 4 },
+  loopHeader: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  loopIcon: {
+    width: 46,
+    height: 46,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.warningYellow,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(245, 182, 66, 0.1)',
+  },
+  loopBody: { flex: 1 },
+  loopTitle: { color: colors.text, fontSize: 20, lineHeight: 24, fontWeight: '900', textTransform: 'uppercase' },
+  loopCopy: { color: colors.muted, fontSize: 12, lineHeight: 17, fontWeight: '800', marginTop: 2 },
+  loopXp: { color: colors.neonGreen, fontSize: 18, fontWeight: '900' },
+  progressTrack: { height: 8, borderRadius: 4, backgroundColor: colors.border, overflow: 'hidden', marginTop: 14 },
+  progressFill: { height: 8, borderRadius: 4, backgroundColor: colors.neonGreen },
+  returnGrid: { flexDirection: 'row', gap: 10 },
+  returnTile: {
+    flex: 1,
+    minHeight: 104,
+    borderRadius: 9,
+    borderWidth: 1,
+    borderColor: colors.softBorder,
+    backgroundColor: 'rgba(17, 13, 18, 0.9)',
+    padding: 14,
+    justifyContent: 'center',
+  },
+  returnTitle: { color: colors.muted, fontSize: 10, fontWeight: '900', textTransform: 'uppercase', marginTop: 8 },
+  returnValue: { color: colors.text, fontSize: 20, lineHeight: 24, fontWeight: '900', marginTop: 2 },
+  challengeTitle: { color: colors.text, fontSize: 18, lineHeight: 22, fontWeight: '900', textTransform: 'uppercase' },
+  challengeCopy: { color: colors.muted, fontSize: 13, lineHeight: 19, fontWeight: '800', marginTop: 6 },
 });

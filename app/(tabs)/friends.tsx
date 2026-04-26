@@ -6,6 +6,9 @@ import { NeonButton } from '../../src/components/common/NeonButton';
 import { Screen } from '../../src/components/common/Screen';
 import { SectionHeader } from '../../src/components/common/SectionHeader';
 import { colors } from '../../src/constants/colors';
+import { shareService } from '../../src/services/shareService';
+import { useHistoryStore } from '../../src/store/historyStore';
+import { getAuxRisk, getVerdictBadge } from '../../src/utils/verdictRewards';
 
 const coDefendants = [
   {
@@ -35,6 +38,19 @@ const coDefendants = [
 ];
 
 export default function FriendsTab() {
+  const latestVerdict = useHistoryStore((state) => state.verdicts[0]);
+
+  const copyChallenge = async () => {
+    const aux = latestVerdict ? getAuxRisk(latestVerdict) : 0;
+    const badge = latestVerdict ? getVerdictBadge(latestVerdict).title : 'Aux Suspect';
+    await shareService.copyCaption(
+      latestVerdict
+        ? `SongCourt gave me ${aux}/100 Aux Risk and unlocked ${badge}. Put your Spotify on trial and beat my case.`
+        : 'I am putting my Spotify on trial in SongCourt. Your aux record is next.',
+    );
+    Alert.alert('Challenge copied.', 'Send it to the friend who keeps asking for the aux.');
+  };
+
   return (
     <Screen>
       <SectionHeader eyebrow="AUX COMPATIBILITY COURT" title="Can your taste survive a car ride?" />
@@ -50,13 +66,13 @@ export default function FriendsTab() {
           <Users color={colors.hotPink} size={56} />
           <Cable color={colors.neonGreen} size={42} />
         </View>
-        <Text style={styles.empty}>Co-defendants are waiting.</Text>
-        <Text style={styles.muted}>Demo compatibility compares verdict patterns, replay behavior, and genre chaos.</Text>
+        <Text style={styles.empty}>Challenge a friend.</Text>
+        <Text style={styles.muted}>No accounts needed yet. Copy a challenge card line and make them put their Spotify evidence on trial.</Text>
         <NeonButton
-          onPress={() => Alert.alert('Invite preview.', 'Shareable invite links will unlock when accounts are connected. Demo compatibility is available below.')}
+          onPress={copyChallenge}
           variant="purple"
         >
-          Invite a Friend
+          Copy Challenge
         </NeonButton>
       </CourtCard>
       {coDefendants.map(({ name, score, verdict, note, color, Icon }) => (

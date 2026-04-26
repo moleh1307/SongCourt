@@ -7,6 +7,7 @@ import type { AppError } from '../types/error';
 import type { Verdict } from '../types/verdict';
 import { useAuthStore } from './authStore';
 import { useHistoryStore } from './historyStore';
+import { useRewardStore } from './rewardStore';
 import { useSettingsStore } from './settingsStore';
 
 type TrialState = {
@@ -44,12 +45,16 @@ export const useTrialStore = create<TrialState>((set) => ({
       const snapshot = auth.isDemoMode ? await spotifyService.getDemoSnapshot() : await spotifyService.getMusicSnapshot(auth.authToken);
       const verdict = await verdictService.generateVerdict(snapshot);
       useHistoryStore.getState().addVerdict(verdict);
+      useRewardStore.getState().recordVerdict(verdict);
       set({ currentVerdict: verdict, isGenerating: false, generationStage: 4 });
       analyticsService.track('trial_generation_completed', {
         is_demo_mode: auth.isDemoMode,
         verdict_id: verdict.id,
         aux_risk_score: verdict.scores.find((score) => score.key === 'auxRisk')?.value,
         rarity: verdict.rarity,
+        badge: verdict.unlockedBadge?.id,
+        court_rank: verdict.courtRank,
+        xp_awarded: verdict.xpAwarded,
         date: verdict.date,
       });
       await haptic(Haptics.ImpactFeedbackStyle.Heavy);
@@ -74,12 +79,16 @@ export const useTrialStore = create<TrialState>((set) => ({
       const snapshot = await spotifyService.getDemoSnapshot();
       const verdict = await verdictService.generateVerdict(snapshot);
       useHistoryStore.getState().addVerdict(verdict);
+      useRewardStore.getState().recordVerdict(verdict);
       set({ currentVerdict: verdict, isGenerating: false, generationStage: 4 });
       analyticsService.track('trial_generation_completed', {
         is_demo_mode: true,
         verdict_id: verdict.id,
         aux_risk_score: verdict.scores.find((score) => score.key === 'auxRisk')?.value,
         rarity: verdict.rarity,
+        badge: verdict.unlockedBadge?.id,
+        court_rank: verdict.courtRank,
+        xp_awarded: verdict.xpAwarded,
         date: verdict.date,
       });
       await haptic(Haptics.ImpactFeedbackStyle.Heavy);

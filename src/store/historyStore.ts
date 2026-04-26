@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Verdict } from '../types/verdict';
 import { todayKey } from '../utils/date';
-import { secureJsonStorage } from './persist';
+import { fileJsonStorage } from './persist';
 
 type HistoryState = {
   verdicts: Verdict[];
@@ -35,6 +35,6 @@ export const useHistoryStore = create<HistoryState>()(
       },
       clearHistory: () => set({ verdicts: [] }),
     }),
-    { name: 'songcourt-history', storage: secureJsonStorage },
+    { name: 'songcourt-history', storage: fileJsonStorage },
   ),
 );

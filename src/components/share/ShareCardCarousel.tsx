@@ -7,7 +7,12 @@ import { useSettingsStore } from '../../store/settingsStore';
 import type { ShareCardStyle, Verdict } from '../../types/verdict';
 import { ShareCardPreview } from './ShareCardPreview';
 
-const stylesList: ShareCardStyle[] = ['neon', 'receipt', 'mugshot', 'minimal'];
+const stylesList: ShareCardStyle[] = ['poster', 'receipt', 'challenge'];
+const styleLabels: Record<ShareCardStyle, string> = {
+  poster: 'Poster',
+  receipt: 'Receipt',
+  challenge: 'Tag Friend',
+};
 
 export function ShareCardCarousel({
   verdict,
@@ -46,12 +51,12 @@ export function ShareCardCarousel({
           return (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={`Select ${styleName} share card`}
+              accessibilityLabel={`Select ${styleLabels[styleName]} share card`}
               key={styleName}
               onPress={() => selectStyle(styleName)}
               style={[styles.selectorChip, active && styles.selectorChipActive]}
             >
-              <Text style={[styles.selectorText, active && styles.selectorTextActive]}>{styleName}</Text>
+              <Text style={[styles.selectorText, active && styles.selectorTextActive]}>{styleLabels[styleName]}</Text>
             </Pressable>
           );
         })}

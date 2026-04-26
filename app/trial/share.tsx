@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
-import { router } from 'expo-router';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { View as RNView } from 'react-native';
 import { ShareCardCarousel } from '../../src/components/share/ShareCardCarousel';
 import { CourtCard } from '../../src/components/common/CourtCard';
@@ -14,14 +14,31 @@ import { useHistoryStore } from '../../src/store/historyStore';
 import { useSettingsStore } from '../../src/store/settingsStore';
 import { useTrialStore } from '../../src/store/trialStore';
 import type { ShareCardStyle } from '../../src/types/verdict';
+import { getVerdictCaptions } from '../../src/utils/verdictRewards';
+
+const templateLabels: Record<ShareCardStyle, string> = {
+  poster: 'Verdict Poster',
+  receipt: 'Court Receipt',
+  challenge: 'Tag a Friend',
+};
 
 export default function ShareScreen() {
+  const { style } = useLocalSearchParams<{ style?: string }>();
   const cardRef = useRef<RNView>(null);
-  const [styleName, setStyleName] = useState<ShareCardStyle>('neon');
+  const [styleName, setStyleName] = useState<ShareCardStyle>('poster');
+  const [captionIndex, setCaptionIndex] = useState(0);
   const currentVerdict = useTrialStore((state) => state.currentVerdict);
   const todayVerdict = useHistoryStore((state) => state.getTodayVerdict());
   const watermarkEnabled = useSettingsStore((state) => state.watermarkEnabled);
   const verdict = currentVerdict ?? todayVerdict;
+  const captions = verdict ? getVerdictCaptions(verdict) : [];
+  const selectedCaption = captions[captionIndex] ?? verdict?.shareCaption ?? '';
+
+  useEffect(() => {
+    if (style === 'poster' || style === 'receipt' || style === 'challenge') {
+      setStyleName(style);
+    }
+  }, [style]);
 
   if (!verdict) {
     return (
@@ -52,16 +69,16 @@ export default function ShareScreen() {
   };
 
   const copy = async () => {
-    await shareService.copyCaption(verdict.shareCaption);
+    await shareService.copyCaption(selectedCaption);
     Alert.alert('Caption copied.', 'The group chat has been warned.');
   };
 
   return (
     <Screen>
-      <SectionHeader eyebrow="SHARE CARD" title="Make the verdict travel." />
+      <SectionHeader eyebrow="VIRAL EVIDENCE" title="Make the verdict travel." />
       <View style={styles.metaRow}>
         <View style={styles.metaTile}>
-          <Text style={styles.metaValue}>{styleName}</Text>
+          <Text style={styles.metaValue}>{templateLabels[styleName]}</Text>
           <Text style={styles.metaLabel}>Template</Text>
         </View>
         <View style={styles.metaTile}>
@@ -82,8 +99,23 @@ export default function ShareScreen() {
         <SecondaryButton onPress={copy}>Copy Caption</SecondaryButton>
       </View>
       <CourtCard quiet>
-        <Text style={styles.kicker}>Caption</Text>
-        <Text style={styles.caption}>{verdict.shareCaption}</Text>
+        <Text style={styles.kicker}>Caption generator</Text>
+        <View style={styles.captionList}>
+          {captions.map((caption, index) => {
+            const active = index === captionIndex;
+            return (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Select caption ${index + 1}`}
+                key={caption}
+                onPress={() => setCaptionIndex(index)}
+                style={[styles.captionChip, active && styles.captionChipActive]}
+              >
+                <Text style={[styles.caption, active && styles.captionActive]}>{caption}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
       </CourtCard>
       <SecondaryButton onPress={() => router.replace('/trial/result')}>Back to Verdict</SecondaryButton>
     </Screen>
@@ -100,9 +132,22 @@ const styles = StyleSheet.create({
     backgroundColor: colors.deepCard,
     padding: 12,
   },
-  metaValue: { color: colors.neonGreen, fontSize: 22, fontWeight: '900', textTransform: 'uppercase' },
+  metaValue: { color: colors.neonGreen, fontSize: 18, lineHeight: 22, fontWeight: '900', textTransform: 'uppercase' },
   metaLabel: { color: colors.muted, fontSize: 10, fontWeight: '900', textTransform: 'uppercase', marginTop: 3 },
   actions: { flexDirection: 'row', gap: 10 },
   kicker: { color: colors.hotPink, fontSize: 11, fontWeight: '900', textTransform: 'uppercase', marginBottom: 8 },
-  caption: { color: colors.text, fontSize: 16, lineHeight: 22, fontWeight: '800' },
+  captionList: { gap: 8 },
+  captionChip: {
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.softBorder,
+    backgroundColor: colors.deepCard,
+    padding: 11,
+  },
+  captionChipActive: {
+    borderColor: colors.neonGreen,
+    backgroundColor: 'rgba(114, 255, 56, 0.09)',
+  },
+  caption: { color: colors.text, fontSize: 14, lineHeight: 20, fontWeight: '800' },
+  captionActive: { color: colors.neonGreen },
 });

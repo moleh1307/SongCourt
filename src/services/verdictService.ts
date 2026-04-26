@@ -6,6 +6,7 @@ import type { Evidence, Verdict } from '../types/verdict';
 import { todayKey } from '../utils/date';
 import { pickBySeed } from '../utils/random';
 import { calculateScores, chooseRarity, chooseVerdictLabel } from '../utils/scoring';
+import { buildCasePacket } from '../utils/verdictRewards';
 
 const buildEvidence = (snapshot: MusicSnapshot): Evidence[] => {
   const titleCounts = snapshot.recentTracks.reduce<Record<string, number>>((counts, track) => {
@@ -54,6 +55,17 @@ export const verdictService = {
     const charge = pickBySeed(chargeTemplates, `${seed}-charge`);
     const sentence = pickBySeed(sentenceTemplates, `${seed}-sentence`);
     const shareCaption = pickBySeed(shareCaptions, `${seed}-caption`);
+    const createdAt = new Date().toISOString();
+    const casePacket = buildCasePacket({
+      snapshot,
+      scores,
+      rarity,
+      primaryCharge: charge,
+      verdictLabel,
+      date,
+      seed,
+      createdAt,
+    });
 
     return {
       id: `verdict-${date}`,
@@ -65,10 +77,11 @@ export const verdictService = {
       sentence,
       rarity,
       raritySubtitle: rarityConfig[rarity].subtitle,
+      ...casePacket,
       scores,
       evidence: buildEvidence(snapshot),
       shareCaption,
-      createdAt: new Date().toISOString(),
+      createdAt,
     };
   },
 };

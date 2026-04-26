@@ -21,7 +21,7 @@ const pages = [
     title: 'Get the score your group chat deserves.',
     text: 'Aux Risk turns your listening chaos into one brutal number.',
     reward: 'Aux Risk',
-    trigger: 'Top 1%',
+    trigger: 'Court class',
     Icon: Gauge,
   },
   {
