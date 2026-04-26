@@ -1,55 +1,47 @@
-# SongCourt
+# SongCourt Backend
 
-SongCourt is a demo-first iPhone entertainment app that puts a user's Spotify history on trial and produces funny, shareable verdict cards.
+This repository has been stripped back to the backend only.
 
-## Stack
+The remaining code is a Vercel-style Node API that owns Spotify OAuth, creates SongCourt session tokens, and returns normalized Spotify listening snapshots.
 
-- Expo SDK 54
-- React Native
-- TypeScript
-- expo-router
-- Zustand
-- SecureStore persistence
+## What Remains
 
-## Run
+- `api/auth/spotify/start.js`
+- `api/auth/spotify/callback.js`
+- `api/auth/spotify/session.js`
+- `api/auth/spotify/disconnect.js`
+- `api/spotify/snapshot.js`
+- `api/me.js`
+- `api/_lib/songcourt.js`
 
-```bash
-cd /Users/melihkarakose/Projects/Active/SongCourt
-source /Users/melihkarakose/.nvm/nvm.sh
-nvm use 22.22.0
-npm install
-npm run ios
-```
+## What Was Removed
 
-If Expo Go opens its first-run developer menu, click `Continue` once.
+All Expo/React Native frontend code, screens, stores, UI components, design assets, generated image prompts, EAS config, and mobile app config were removed.
 
-## Verification
+## Environment
+
+Set these on Vercel or your backend host:
 
 ```bash
-npx tsc --noEmit
-npx expo-doctor
-npx expo export --platform ios --output-dir dist-test
-rm -rf dist-test
+SPOTIFY_CLIENT_ID=<spotify-client-id>
+SPOTIFY_CLIENT_SECRET=<spotify-client-secret>
+SPOTIFY_REDIRECT_URI=https://<songcourt-api-domain>/auth/spotify/callback
+SONGCOURT_TOKEN_SECRET=<long-random-secret>
+SONGCOURT_ALLOWED_RETURN_URIS=songcourt://auth/spotify/callback
 ```
 
-## iOS Builds
+For multiple allowed app return URIs:
 
 ```bash
-npx eas-cli build --platform ios --profile simulator
-npx eas-cli build --platform ios --profile preview
-npx eas-cli build --platform ios --profile production
+SONGCOURT_ALLOWED_RETURN_URIS=songcourt://auth/spotify/callback,exp://<local-ip>:8081/--/auth/spotify/callback
 ```
 
-Use `simulator` for a local iOS Simulator artifact, `preview` for internal device testing, and `production` when preparing App Store/TestFlight builds.
+## Check
 
-## Current MVP Flow
-
-```text
-Splash -> Onboarding -> Connect / Preview Demo Trial -> Loading -> Verdict -> Share Card -> History
+```bash
+npm run check
 ```
 
-Real Spotify OAuth and backend APIs are intentionally not implemented yet. Service boundaries exist under `src/services/` so they can be replaced later without rewriting screens.
+## API Contract
 
-## Backend Hooks
-
-Future API endpoints are stubbed in [src/services/apiClient.ts](src/services/apiClient.ts). Set `EXPO_PUBLIC_API_BASE_URL` when a backend exists.
+See [docs/spotify-production-setup.md](docs/spotify-production-setup.md).

@@ -1,16 +1,15 @@
-# Spotify Production Setup
+# Spotify Backend Setup
 
-SongCourt is wired for real Spotify login and includes a minimal Vercel-style backend in `/api`. It still needs Spotify dashboard values and deployed backend env vars before real user data can flow.
+SongCourt is currently backend-only. The remaining `/api` routes implement Spotify login, SongCourt session token creation, and Spotify listening snapshot normalization.
 
 ## Spotify Dashboard
 
 Create a Spotify Developer app and configure:
 
 - App name: `SongCourt`
-- Bundle identifier: `com.melihkarakose.songcourt`
 - Redirect URI: `https://<songcourt-api-domain>/auth/spotify/callback`
 
-Spotify requires the OAuth redirect URI to be HTTPS for production. Do not use `songcourt://...` as the Spotify dashboard redirect. The backend receives the Spotify callback, exchanges the authorization code, creates a one-time login ticket, then redirects back into the app with:
+Spotify requires the OAuth redirect URI to be HTTPS for production. Do not use `songcourt://...` as the Spotify dashboard redirect. The backend receives the Spotify callback, exchanges the authorization code, creates a one-time login ticket, then redirects back to an allowed client URI with:
 
 ```text
 songcourt://auth/spotify/callback?ticket=<one-time-ticket>&state=<state>
@@ -23,20 +22,7 @@ The backend should request these Spotify scopes:
 - `user-top-read`
 - `user-read-recently-played`
 
-Set local Expo env:
-
-```bash
-EXPO_PUBLIC_API_BASE_URL=https://<songcourt-api-domain>
-EXPO_PUBLIC_SPOTIFY_RETURN_URI=songcourt://auth/spotify/callback
-```
-
-For Expo Go simulator QA, use the Expo development URL instead of the production custom scheme:
-
-```bash
-EXPO_PUBLIC_SPOTIFY_RETURN_URI=exp://<local-ip>:8081/--/auth/spotify/callback
-```
-
-Also add that exact Expo URI to `SONGCOURT_ALLOWED_RETURN_URIS` on the backend while testing.
+The client app no longer exists in this repo. Any future frontend must call this backend and provide an allowed `returnUri` when starting Spotify login.
 
 ## Backend Env
 
@@ -166,8 +152,8 @@ Returns the current SongCourt user for the API token.
 
 Deletes the user's stored Spotify refresh token/session server-side.
 
-## Current App Behavior
+## Current Repository State
 
-- If `EXPO_PUBLIC_API_BASE_URL` is missing, the Connect button explains what setup is missing and the demo trial remains available.
-- If the backend redirects back with a valid `ticket` and `state`, the app calls `/auth/spotify/session`, stores the returned SongCourt API token in SecureStore-backed Zustand persistence, and opens verdict generation.
-- Real verdict generation calls `/spotify/snapshot`; demo mode still uses local demo tracks.
+- Frontend/UI/mobile code has been removed.
+- The backend is stateless: it encrypts Spotify refresh tokens inside signed SongCourt API tokens using `SONGCOURT_TOKEN_SECRET`.
+- A future frontend should start login through `/auth/spotify/start`, exchange callback tickets through `/auth/spotify/session`, then call `/spotify/snapshot` with the returned bearer token.
