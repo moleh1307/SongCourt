@@ -1,4 +1,4 @@
-const { encryptSecret, exchangeCode, json, signToken, spotifyFetch, verifyToken } = require('../../../_lib/songcourt');
+const { encryptSecret, exchangeCode, json, signToken, spotifyFetch, verifyToken } = require('../../_lib/songcourt');
 
 module.exports = async (req, res) => {
   try {
