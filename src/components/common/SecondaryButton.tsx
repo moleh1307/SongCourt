@@ -29,13 +29,13 @@ export function SecondaryButton({ children, onPress, accessibilityLabel }: Secon
 const styles = StyleSheet.create({
   button: {
     minHeight: 50,
-    borderRadius: 8,
+    borderRadius: 9,
     borderWidth: 1,
-    borderColor: colors.softBorder,
+    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
-    backgroundColor: colors.deepCard,
+    backgroundColor: 'rgba(17, 13, 18, 0.9)',
   },
-  label: { color: colors.text, fontSize: 13, fontWeight: '800', textTransform: 'uppercase' },
+  label: { color: colors.text, fontSize: 13, fontWeight: '900', textTransform: 'uppercase' },
 });

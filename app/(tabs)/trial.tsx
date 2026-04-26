@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { CheckCircle2, Gavel, Music2, ShieldCheck } from 'lucide-react-native';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { CourtCard } from '../../src/components/common/CourtCard';
 import { DopamineStrip } from '../../src/components/common/DopamineStrip';
 import { NeonButton } from '../../src/components/common/NeonButton';
@@ -12,8 +12,6 @@ import { useAuthStore } from '../../src/store/authStore';
 import { useHistoryStore } from '../../src/store/historyStore';
 import { useTrialStore } from '../../src/store/trialStore';
 import { formatDisplayDate } from '../../src/utils/date';
-
-const caseFilePaper = require('../../assets/premium/case-file-paper.png');
 
 export default function TrialTab() {
   const spotifyConnected = useAuthStore((state) => state.spotifyConnected);
@@ -34,48 +32,20 @@ export default function TrialTab() {
 
   return (
     <Screen>
-      <SectionHeader eyebrow="SONGCOURT" title="Open today's music case." />
+      <SectionHeader eyebrow="CASE #10247" title="Today's trial." />
 
       {!spotifyConnected ? (
-        <CourtCard accent={colors.neonGreen}>
-          <ImageBackground source={caseFilePaper} resizeMode="cover" style={styles.fileHero}>
-            <View style={styles.fileOverlay}>
-              <View style={styles.heroTop}>
-                <View style={styles.caseSeal}>
-                  <Music2 color={colors.neonGreen} size={28} />
-                </View>
-                <View style={styles.statusPill}>
-                  <Text style={styles.statusText}>NO EVIDENCE</Text>
-                </View>
-              </View>
-              <Text style={styles.fileTitle}>YOUR TASTE ON TRIAL</Text>
-              <Text style={styles.fileLine}>Status: pending evidence</Text>
-            </View>
-          </ImageBackground>
+        <CourtCard accent={colors.dangerRed}>
+          <TrialDial status="Evidence missing" Icon={Music2} />
           <Text style={styles.heroTitle}>Connect Spotify to unlock the courtroom.</Text>
-          <Text style={styles.heroCopy}>SongCourt needs listening history before it can file charges.</Text>
-          <NeonButton onPress={() => router.push('/connect')}>Connect Spotify</NeonButton>
+          <Text style={styles.heroCopy}>We need the goods before the court can build your case.</Text>
+          <NeonButton onPress={() => router.push('/connect')} variant="green">Connect Spotify</NeonButton>
           <SecondaryButton onPress={startTrial}>Preview Demo Trial</SecondaryButton>
         </CourtCard>
       ) : todayVerdict ? (
         <>
           <CourtCard accent={colors.dangerRed}>
-            <ImageBackground source={caseFilePaper} resizeMode="cover" style={styles.fileHero}>
-              <View style={styles.fileOverlay}>
-                <View style={styles.heroTop}>
-                  <View style={[styles.caseSeal, styles.caseSealDanger]}>
-                    <ShieldCheck color={colors.dangerRed} size={28} />
-                  </View>
-                  <View style={[styles.statusPill, styles.statusPillDanger]}>
-                    <Text style={[styles.statusText, styles.statusTextDanger]}>SEALED</Text>
-                  </View>
-                </View>
-                <Text style={styles.fileTitle}>CASE FILE CLOSED</Text>
-                <Text style={styles.fileLine}>Verdict: already in evidence</Text>
-              </View>
-            </ImageBackground>
-            <Text style={styles.heroTitle}>Today's verdict is already in evidence.</Text>
-            <Text style={styles.heroCopy}>Open it, share it, or re-run the court if you want a fresh scan.</Text>
+            <TrialDial status="Not tried today" Icon={ShieldCheck} sealed />
           </CourtCard>
           <CourtCard quiet>
             <Text style={styles.compactDate}>{formatDisplayDate(todayVerdict.date)}</Text>
@@ -94,21 +64,8 @@ export default function TrialTab() {
           <SecondaryButton onPress={startTrial}>Regenerate</SecondaryButton>
         </>
       ) : (
-        <CourtCard accent={colors.neonGreen}>
-          <ImageBackground source={caseFilePaper} resizeMode="cover" style={styles.fileHero}>
-            <View style={styles.fileOverlay}>
-              <View style={styles.heroTop}>
-                <View style={styles.caseSeal}>
-                  <Gavel color={colors.neonGreen} size={30} />
-                </View>
-                <View style={styles.statusPill}>
-                  <Text style={styles.statusText}>READY</Text>
-                </View>
-              </View>
-              <Text style={styles.fileTitle}>YOUR TASTE ON TRIAL</Text>
-              <Text style={styles.fileLine}>Charges ready for review</Text>
-            </View>
-          </ImageBackground>
+        <CourtCard accent={colors.dangerRed}>
+          <TrialDial status="The court is ready" Icon={Gavel} />
           <Text style={styles.heroTitle}>One tap. One brutal verdict.</Text>
           <Text style={styles.heroCopy}>Your recent listens are ready for a daily music trial.</Text>
           <NeonButton onPress={startTrial} accessibilityLabel="Put me on trial">Put Me On Trial</NeonButton>
@@ -136,35 +93,87 @@ export default function TrialTab() {
   );
 }
 
+function TrialDial({ status, Icon, sealed }: { status: string; Icon: typeof Gavel; sealed?: boolean }) {
+  return (
+    <View style={styles.trialBoard}>
+      <View style={styles.heroTop}>
+        <View style={styles.caseSeal}>
+          <Icon color={sealed ? colors.dangerRed : colors.warningYellow} size={28} />
+        </View>
+        <Text style={styles.caseNumber}>CASE #10247</Text>
+      </View>
+      <View style={styles.dialOuter}>
+        <View style={styles.dialMid}>
+          <View style={styles.dialInner}>
+            <Text style={styles.dialStatus}>{sealed ? 'VERDICT' : 'TODAY'}</Text>
+            <Text style={styles.dialTitle}>{status}</Text>
+          </View>
+        </View>
+      </View>
+      <Text style={styles.boardCopy}>The court is ready. Put yourself on trial.</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  fileHero: { height: 290, borderRadius: 10, overflow: 'hidden', marginBottom: 18 },
-  fileOverlay: { flex: 1, padding: 18, backgroundColor: 'rgba(244, 227, 189, 0.12)', justifyContent: 'space-between' },
-  heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 },
+  trialBoard: {
+    minHeight: 214,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 23, 79, 0.44)',
+    backgroundColor: 'rgba(8, 5, 9, 0.74)',
+    padding: 14,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  heroTop: { alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
   caseSeal: {
     width: 54,
     height: 54,
-    borderRadius: 8,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: colors.neonGreen,
-    backgroundColor: 'rgba(182, 255, 59, 0.08)',
+    borderColor: colors.warningYellow,
+    backgroundColor: 'rgba(245, 182, 66, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  caseSealDanger: { borderColor: colors.dangerRed, backgroundColor: 'rgba(255, 53, 94, 0.08)' },
-  statusPill: {
+  caseNumber: { color: colors.hotPink, fontSize: 11, fontWeight: '900' },
+  dialOuter: {
+    width: 136,
+    height: 136,
+    borderRadius: 68,
     borderWidth: 1,
-    borderColor: colors.neonGreen,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    backgroundColor: 'rgba(182, 255, 59, 0.08)',
+    borderColor: colors.dangerRed,
+    backgroundColor: 'rgba(255, 23, 79, 0.12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.dangerRed,
+    shadowOpacity: 0.52,
+    shadowRadius: 24,
   },
-  statusPillDanger: { borderColor: colors.dangerRed, backgroundColor: 'rgba(255, 53, 94, 0.08)' },
-  statusText: { color: colors.neonGreen, fontSize: 11, fontWeight: '900' },
-  statusTextDanger: { color: colors.dangerRed },
-  fileTitle: { color: colors.ink, fontSize: 39, lineHeight: 41, fontWeight: '900', maxWidth: 260 },
-  fileLine: { color: '#5C4633', fontSize: 13, fontWeight: '900', textTransform: 'uppercase' },
-  heroTitle: { color: colors.text, fontSize: 27, lineHeight: 32, fontWeight: '900', textTransform: 'uppercase', marginBottom: 8 },
+  dialMid: {
+    width: 104,
+    height: 104,
+    borderRadius: 52,
+    borderWidth: 9,
+    borderColor: 'rgba(255, 31, 104, 0.62)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dialInner: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: colors.vinyl,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  dialStatus: { color: colors.warningYellow, fontSize: 9, fontWeight: '900', textTransform: 'uppercase' },
+  dialTitle: { color: colors.text, fontSize: 11, lineHeight: 13, fontWeight: '900', textAlign: 'center', textTransform: 'uppercase', marginTop: 3 },
+  boardCopy: { color: colors.muted, fontSize: 13, fontWeight: '800', textAlign: 'center' },
+  heroTitle: { color: colors.text, fontSize: 27, lineHeight: 31, fontWeight: '900', textTransform: 'uppercase', marginBottom: 8 },
   heroCopy: { color: colors.muted, fontSize: 15, lineHeight: 21, fontWeight: '700', marginBottom: 18 },
   docketTitle: { color: colors.text, fontSize: 13, fontWeight: '900', textTransform: 'uppercase', marginBottom: 10 },
   docketRow: { flexDirection: 'row', alignItems: 'center', gap: 9, paddingVertical: 9, borderTopWidth: 1, borderTopColor: colors.softBorder },
@@ -174,14 +183,14 @@ const styles = StyleSheet.create({
   compactRisk: {
     width: 70,
     height: 70,
-    borderRadius: 8,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: colors.neonGreen,
+    borderColor: colors.dangerRed,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(182, 255, 59, 0.08)',
+    backgroundColor: 'rgba(255, 23, 79, 0.1)',
   },
-  compactRiskValue: { color: colors.neonGreen, fontSize: 28, fontWeight: '900' },
+  compactRiskValue: { color: colors.dangerRed, fontSize: 28, fontWeight: '900' },
   compactRiskLabel: { color: colors.muted, fontSize: 9, fontWeight: '900', textTransform: 'uppercase' },
   compactBody: { flex: 1 },
   compactTitle: { color: colors.text, fontSize: 22, lineHeight: 26, fontWeight: '900' },

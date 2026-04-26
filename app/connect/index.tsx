@@ -53,7 +53,7 @@ export default function ConnectScreen() {
           <Lock color={colors.muted} size={17} />
           <Text style={styles.trustText}>We use listening data to calculate verdicts and compatibility. We never post without permission.</Text>
         </View>
-        <NeonButton onPress={connect}>Connect Spotify</NeonButton>
+        <NeonButton onPress={connect} variant="green">Connect Spotify</NeonButton>
         <SecondaryButton onPress={preview}>Preview Demo Trial</SecondaryButton>
       </CourtCard>
     </Screen>

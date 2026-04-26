@@ -41,10 +41,15 @@ export const ShareCardPreview = forwardRef<View, ShareCardPreviewProps>(
           <Text style={[styles.logo, darkText && styles.darkText]}>SongCourt</Text>
           <Text style={[styles.date, darkText && styles.darkMuted]}>{formatDisplayDate(verdict.date)}</Text>
         </View>
-        <Text style={[styles.kicker, darkText && styles.redText]}>{styleName === 'mugshot' ? 'WANTED FOR AUX CRIMES' : 'THE COURT HAS SPOKEN'}</Text>
+        <View style={[styles.stamp, darkText && styles.stampPaper]}>
+          <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.stampText, darkText && styles.redText]}>
+            {styleName === 'mugshot' ? 'AUX OFFENDER' : verdict.verdictLabel}
+          </Text>
+        </View>
         <View style={styles.headlineBlock}>
-          <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.verdict, darkText && styles.darkText]}>
-            {verdict.verdictLabel}
+          <Text style={[styles.kicker, darkText && styles.redText]}>{styleName === 'mugshot' ? 'GUILTY OF' : 'THE COURT HAS SPOKEN'}</Text>
+          <Text adjustsFontSizeToFit numberOfLines={3} style={[styles.verdict, darkText && styles.darkText]}>
+            {verdict.primaryCharge}
           </Text>
         </View>
         <View style={styles.riskPanel}>
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: colors.neonGreen,
+    borderColor: colors.dangerRed,
     overflow: 'hidden',
   },
   receipt: { backgroundColor: colors.courtPaper, borderColor: colors.dangerRed },
@@ -98,16 +103,28 @@ const styles = StyleSheet.create({
   receiptContent: { backgroundColor: 'rgba(244, 227, 189, 0.72)' },
   minimalContent: { backgroundColor: '#050507' },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 },
-  logo: { color: colors.text, fontSize: 18, fontWeight: '900' },
+  logo: { color: colors.text, fontSize: 18, fontWeight: '900', fontStyle: 'italic' },
   date: { color: colors.muted, fontSize: 10, fontWeight: '800' },
-  kicker: { color: colors.hotPink, fontSize: 10, fontWeight: '900', textAlign: 'center', marginTop: 18 },
-  headlineBlock: { minHeight: 118, justifyContent: 'center' },
+  stamp: {
+    borderWidth: 2,
+    borderColor: colors.dangerRed,
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    transform: [{ rotate: '-3deg' }],
+    backgroundColor: 'rgba(255, 23, 79, 0.1)',
+    marginTop: 14,
+  },
+  stampPaper: { backgroundColor: 'rgba(255, 23, 79, 0.04)' },
+  stampText: { color: colors.dangerRed, fontSize: 31, lineHeight: 35, fontWeight: '900', textAlign: 'center', textTransform: 'uppercase' },
+  kicker: { color: colors.hotPink, fontSize: 10, fontWeight: '900', textAlign: 'center' },
+  headlineBlock: { minHeight: 104, justifyContent: 'center', gap: 8 },
   score: { color: colors.hotPink, fontSize: 64, lineHeight: 68, fontWeight: '900' },
-  verdict: { color: colors.text, fontSize: 38, lineHeight: 40, fontWeight: '900', textAlign: 'center', textTransform: 'uppercase' },
+  verdict: { color: colors.text, fontSize: 25, lineHeight: 29, fontWeight: '900', textAlign: 'center', textTransform: 'uppercase' },
   riskPanel: {
     marginTop: 'auto',
     borderWidth: 1,
-    borderColor: 'rgba(255, 62, 165, 0.56)',
+    borderColor: 'rgba(255, 23, 79, 0.56)',
     borderRadius: 10,
     padding: 12,
     backgroundColor: 'rgba(5, 5, 7, 0.58)',

@@ -7,13 +7,18 @@ import { useSettingsStore } from '../../store/settingsStore';
 type NeonButtonProps = {
   children: ReactNode;
   onPress: () => void;
-  variant?: 'primary' | 'danger' | 'purple';
+  variant?: 'primary' | 'danger' | 'purple' | 'green';
   accessibilityLabel?: string;
 };
 
 export function NeonButton({ children, onPress, variant = 'primary', accessibilityLabel }: NeonButtonProps) {
   const hapticsEnabled = useSettingsStore((state) => state.hapticsEnabled);
-  const color = variant === 'danger' ? colors.dangerRed : variant === 'purple' ? colors.electricPurple : colors.neonGreen;
+  const color =
+    variant === 'green'
+      ? colors.neonGreen
+      : variant === 'purple'
+        ? colors.electricPurple
+        : colors.dangerRed;
   const press = () => {
     if (hapticsEnabled) {
       void Haptics.impactAsync(variant === 'primary' ? Haptics.ImpactFeedbackStyle.Heavy : Haptics.ImpactFeedbackStyle.Medium);
@@ -37,14 +42,16 @@ export function NeonButton({ children, onPress, variant = 'primary', accessibili
 const styles = StyleSheet.create({
   button: {
     minHeight: 56,
-    borderRadius: 10,
+    borderRadius: 9,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 18,
-    shadowOpacity: 0.42,
-    shadowRadius: 22,
+    shadowOpacity: 0.56,
+    shadowRadius: 24,
     shadowOffset: { width: 0, height: 12 },
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 246, 228, 0.18)',
   },
   pressed: { transform: [{ scale: 0.98 }], opacity: 0.9 },
   innerRule: {
@@ -55,5 +62,5 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
   },
-  label: { color: colors.black, fontSize: 15, fontWeight: '900', letterSpacing: 0, textTransform: 'uppercase' },
+  label: { color: colors.text, fontSize: 15, fontWeight: '900', letterSpacing: 0, textTransform: 'uppercase' },
 });
