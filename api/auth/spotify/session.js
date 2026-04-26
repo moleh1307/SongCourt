@@ -1,4 +1,4 @@
-const { json, signToken, verifyToken } = require('../../../_lib/songcourt');
+const { json, signToken, verifyToken } = require('../../_lib/songcourt');
 
 module.exports = async (req, res) => {
   try {
