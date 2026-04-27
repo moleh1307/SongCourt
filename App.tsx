@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Linking } from 'react-native';
+import { Linking, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import {
   createDemoShareCardPayload,
   createShareCardPayloadFromSnapshot,
 } from './src/domain/sharePayloadFactory';
+import { colors } from './src/design/tokens';
+import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { TrialHomeScreen } from './src/screens/TrialHomeScreen';
 import { TrialLoadingScreen } from './src/screens/TrialLoadingScreen';
 import { VerdictShareFlowScreen } from './src/screens/VerdictShareFlowScreen';
+import { hasCompletedOnboarding, markOnboardingComplete } from './src/services/onboardingStore';
 import {
   createAuthState,
   createSessionFromTicket,
@@ -18,11 +21,11 @@ import {
 import { type ShareCardPayload } from './src/components/share-cards/types';
 import { type SongCourtUser } from './src/types/songcourt';
 
-type AppScreen = 'trial' | 'loading' | 'verdict';
+type AppScreen = 'boot' | 'onboarding' | 'trial' | 'loading' | 'verdict';
 type TrialSource = 'demo' | 'spotify';
 
 export default function App() {
-  const [activeScreen, setActiveScreen] = useState<AppScreen>('trial');
+  const [activeScreen, setActiveScreen] = useState<AppScreen>('boot');
   const [authMessage, setAuthMessage] = useState<string | undefined>();
   const [isConnecting, setIsConnecting] = useState(false);
   const [pendingAuthState, setPendingAuthState] = useState<string | null>(null);
@@ -30,6 +33,26 @@ export default function App() {
   const [trialSource, setTrialSource] = useState<TrialSource>('demo');
   const [user, setUser] = useState<SongCourtUser | null>(null);
   const [verdictPayload, setVerdictPayload] = useState<ShareCardPayload>(() => createDemoShareCardPayload());
+
+  useEffect(() => {
+    let isMounted = true;
+
+    hasCompletedOnboarding()
+      .then((isComplete) => {
+        if (isMounted) {
+          setActiveScreen(isComplete ? 'trial' : 'onboarding');
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setActiveScreen('onboarding');
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const subscription = Linking.addEventListener('url', (event) => {
@@ -79,6 +102,16 @@ export default function App() {
     }
   }
 
+  async function finishOnboarding() {
+    try {
+      await markOnboardingComplete();
+    } catch {
+      // SecureStore can fail in constrained runtimes; onboarding should never block the app.
+    }
+
+    setActiveScreen('trial');
+  }
+
   async function connectSpotify() {
     try {
       const state = createAuthState();
@@ -122,6 +155,23 @@ export default function App() {
       setActiveScreen('trial');
       setAuthMessage(error instanceof Error ? error.message : 'Trial generation failed.');
     }
+  }
+
+  if (activeScreen === 'boot') {
+    return (
+      <View style={{ backgroundColor: colors.warmIvory, flex: 1 }}>
+        <StatusBar style="dark" />
+      </View>
+    );
+  }
+
+  if (activeScreen === 'onboarding') {
+    return (
+      <>
+        <OnboardingScreen onFinish={() => void finishOnboarding()} />
+        <StatusBar style="dark" />
+      </>
+    );
   }
 
   if (activeScreen === 'loading') {
