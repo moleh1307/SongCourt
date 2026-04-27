@@ -14,6 +14,7 @@ type TrialHomeScreenProps = {
   lastVerdict?: VerdictHistoryRecord;
   onConnectSpotify: () => void;
   onOpenArchive: () => void;
+  onOpenSettings: () => void;
   onRunDemoTrial: () => void;
   onRunSpotifyTrial: () => void;
   user?: SongCourtUser | null;
@@ -27,6 +28,7 @@ export function TrialHomeScreen({
   lastVerdict,
   onConnectSpotify,
   onOpenArchive,
+  onOpenSettings,
   onRunDemoTrial,
   onRunSpotifyTrial,
   user,
@@ -44,9 +46,9 @@ export function TrialHomeScreen({
                 {historyCount > 0 ? `${historyCount} saved` : 'Archive'}
               </Text>
             </Pressable>
-            <View style={styles.livePill}>
-              <Text style={styles.livePillText}>Case ready</Text>
-            </View>
+            <Pressable accessibilityRole="button" onPress={onOpenSettings} style={styles.settingsPill}>
+              <Text style={styles.settingsPillText}>Profile</Text>
+            </Pressable>
           </View>
         </View>
 
@@ -102,6 +104,10 @@ export function TrialHomeScreen({
 
             <Pressable accessibilityRole="button" onPress={onOpenArchive} style={styles.tertiaryButton}>
               <Text style={styles.tertiaryButtonText}>Open Case Archive</Text>
+            </Pressable>
+
+            <Pressable accessibilityRole="button" onPress={onOpenSettings} style={styles.tertiaryButton}>
+              <Text style={styles.tertiaryButtonText}>Profile & Settings</Text>
             </Pressable>
           </View>
         </View>
@@ -185,13 +191,13 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 0,
   },
-  livePill: {
+  settingsPill: {
     backgroundColor: colors.ink,
     borderRadius: 6,
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
-  livePillText: {
+  settingsPillText: {
     color: colors.warmIvory,
     fontFamily: fonts.body,
     fontSize: 9,

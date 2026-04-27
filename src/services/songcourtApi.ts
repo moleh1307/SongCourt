@@ -48,6 +48,17 @@ export async function fetchMusicSnapshot(token: string): Promise<MusicSnapshot> 
   return parseJsonResponse<MusicSnapshot>(response);
 }
 
+export async function disconnectSpotify(token: string) {
+  const response = await fetch(`${apiBaseUrl}/auth/spotify/disconnect`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: 'POST',
+  });
+
+  return parseJsonResponse<{ ok: boolean }>(response);
+}
+
 async function parseJsonResponse<T>(response: Response): Promise<T> {
   const body = await response.json().catch(() => undefined);
 

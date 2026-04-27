@@ -9,26 +9,30 @@ import {
 import { colors } from './src/design/tokens';
 import { CaseArchiveScreen } from './src/screens/CaseArchiveScreen';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
+import { ProfileSettingsScreen } from './src/screens/ProfileSettingsScreen';
 import { TrialHomeScreen } from './src/screens/TrialHomeScreen';
 import { TrialLoadingScreen } from './src/screens/TrialLoadingScreen';
 import { VerdictShareFlowScreen } from './src/screens/VerdictShareFlowScreen';
 import { hasCompletedOnboarding, markOnboardingComplete } from './src/services/onboardingStore';
-import { getStoredSession, saveStoredSession } from './src/services/sessionStore';
+import { getSongCourtSettings, saveShareWatermarkEnabled } from './src/services/settingsStore';
+import { clearStoredSession, getStoredSession, saveStoredSession } from './src/services/sessionStore';
 import {
   createAuthState,
   createSessionFromTicket,
+  disconnectSpotify,
   fetchMusicSnapshot,
   openSpotifyLogin,
 } from './src/services/songcourtApi';
 import {
   addVerdictToHistory,
+  clearVerdictHistory,
   getVerdictHistory,
   type VerdictHistoryRecord,
 } from './src/services/verdictHistoryStore';
 import { type ShareCardPayload } from './src/components/share-cards/types';
 import { type SongCourtUser } from './src/types/songcourt';
 
-type AppScreen = 'boot' | 'onboarding' | 'trial' | 'loading' | 'verdict' | 'archive';
+type AppScreen = 'boot' | 'onboarding' | 'trial' | 'loading' | 'verdict' | 'archive' | 'settings';
 type TrialSource = 'demo' | 'spotify';
 
 export default function App() {
@@ -40,14 +44,15 @@ export default function App() {
   const [trialSource, setTrialSource] = useState<TrialSource>('demo');
   const [user, setUser] = useState<SongCourtUser | null>(null);
   const [history, setHistory] = useState<VerdictHistoryRecord[]>([]);
+  const [shareWatermarkEnabled, setShareWatermarkEnabled] = useState(true);
   const [verdictPayload, setVerdictPayload] = useState<ShareCardPayload>(() => createDemoShareCardPayload());
   const [verdictSourceLabel, setVerdictSourceLabel] = useState('Demo Trial');
 
   useEffect(() => {
     let isMounted = true;
 
-    Promise.all([hasCompletedOnboarding(), getStoredSession(), getVerdictHistory()])
-      .then(([isComplete, storedSession, storedHistory]) => {
+    Promise.all([hasCompletedOnboarding(), getStoredSession(), getVerdictHistory(), getSongCourtSettings()])
+      .then(([isComplete, storedSession, storedHistory, settings]) => {
         if (isMounted) {
           if (storedSession) {
             setSessionToken(storedSession.token);
@@ -55,6 +60,8 @@ export default function App() {
           }
 
           setHistory(storedHistory);
+          setShareWatermarkEnabled(settings.shareWatermarkEnabled);
+          setVerdictPayload((currentPayload) => withWatermark(currentPayload, settings.shareWatermarkEnabled));
           setActiveScreen(isComplete ? 'trial' : 'onboarding');
         }
       })
@@ -107,7 +114,7 @@ export default function App() {
       const session = await createSessionFromTicket(ticket);
       setSessionToken(session.token);
       setUser(session.user);
-      saveStoredSession(session.token, session.user).catch(() => undefined);
+      await saveStoredSession(session.token, session.user).catch(() => undefined);
       setPendingAuthState(null);
       setIsConnecting(false);
       setAuthMessage('Spotify connected. Your real trial is ready.');
@@ -164,16 +171,17 @@ export default function App() {
         source === 'spotify' && sessionToken
           ? createShareCardPayloadFromSnapshot(await fetchMusicSnapshot(sessionToken), user)
           : createDemoShareCardPayload();
+      const displayPayload = withWatermark(payload, shareWatermarkEnabled);
 
       await wait(Math.max(0, 2400 - (Date.now() - startedAt)));
-      const savedRecord = await addVerdictToHistory(payload, sourceLabel).catch(() => undefined);
+      const savedRecord = await addVerdictToHistory(displayPayload, sourceLabel).catch(() => undefined);
 
       if (savedRecord) {
         setHistory((currentHistory) => [savedRecord, ...currentHistory].slice(0, 30));
       }
 
       setVerdictSourceLabel(sourceLabel);
-      setVerdictPayload(payload);
+      setVerdictPayload(displayPayload);
       setActiveScreen('verdict');
     } catch (error) {
       setActiveScreen('trial');
@@ -182,9 +190,35 @@ export default function App() {
   }
 
   function openStoredVerdict(record: VerdictHistoryRecord) {
-    setVerdictPayload(record.payload);
+    setVerdictPayload(withWatermark(record.payload, shareWatermarkEnabled));
     setVerdictSourceLabel(record.sourceLabel);
     setActiveScreen('verdict');
+  }
+
+  function updateShareWatermark(enabled: boolean) {
+    setShareWatermarkEnabled(enabled);
+    setVerdictPayload((currentPayload) => withWatermark(currentPayload, enabled));
+    saveShareWatermarkEnabled(enabled).catch(() => undefined);
+  }
+
+  async function disconnectSpotifySession() {
+    const tokenToDisconnect = sessionToken;
+
+    setSessionToken(null);
+    setUser(null);
+    setPendingAuthState(null);
+    setIsConnecting(false);
+    setAuthMessage('Spotify disconnected. Demo mode is ready.');
+
+    await Promise.all([
+      clearStoredSession().catch(() => undefined),
+      tokenToDisconnect ? disconnectSpotify(tokenToDisconnect).catch(() => undefined) : Promise.resolve(),
+    ]);
+  }
+
+  async function clearHistory() {
+    await clearVerdictHistory().catch(() => undefined);
+    setHistory([]);
   }
 
   if (activeScreen === 'boot') {
@@ -199,6 +233,25 @@ export default function App() {
     return (
       <>
         <OnboardingScreen onFinish={() => void finishOnboarding()} />
+        <StatusBar style="dark" />
+      </>
+    );
+  }
+
+  if (activeScreen === 'settings') {
+    return (
+      <>
+        <ProfileSettingsScreen
+          historyCount={history.length}
+          isSpotifyConnected={Boolean(sessionToken)}
+          onBack={() => setActiveScreen('trial')}
+          onClearHistory={() => void clearHistory()}
+          onDisconnectSpotify={() => void disconnectSpotifySession()}
+          onOpenArchive={() => setActiveScreen('archive')}
+          onToggleWatermark={updateShareWatermark}
+          user={user}
+          watermarkEnabled={shareWatermarkEnabled}
+        />
         <StatusBar style="dark" />
       </>
     );
@@ -252,6 +305,7 @@ export default function App() {
         lastVerdict={history[0]}
         onConnectSpotify={connectSpotify}
         onOpenArchive={() => setActiveScreen('archive')}
+        onOpenSettings={() => setActiveScreen('settings')}
         onRunDemoTrial={() => void runTrial('demo')}
         onRunSpotifyTrial={() => void runTrial('spotify')}
         user={user}
@@ -265,4 +319,11 @@ function wait(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+function withWatermark(payload: ShareCardPayload, watermarkEnabled: boolean): ShareCardPayload {
+  return {
+    ...payload,
+    watermarkEnabled,
+  };
 }
