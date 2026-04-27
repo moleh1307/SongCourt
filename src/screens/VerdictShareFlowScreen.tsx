@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Pressable,
@@ -19,8 +19,8 @@ import {
   ShareCardSurface,
   type ShareTemplateId,
 } from '../components/share-cards/ShareCardSurface';
+import { type ShareCardPayload } from '../components/share-cards/types';
 import { colors, spacing } from '../design/tokens';
-import { sampleShareCard } from '../data/sampleShareCard';
 import { captureShareCard } from '../utils/shareCardExport';
 
 const templateOptions: Array<{
@@ -40,17 +40,21 @@ const templateOptions: Array<{
   },
 ];
 
-const captions = [
-  'The court reviewed my Spotify history and the evidence is loud.',
-  'I asked for a music personality test. I got sentenced.',
-  'Aux privileges officially under investigation.',
-  'My listening history just entered the courtroom.',
-];
+type VerdictShareFlowScreenProps = {
+  onNewTrial?: () => void;
+  payload: ShareCardPayload;
+  sourceLabel?: string;
+};
 
-export function VerdictShareFlowScreen() {
+export function VerdictShareFlowScreen({
+  onNewTrial,
+  payload,
+  sourceLabel = 'Daily Trial',
+}: VerdictShareFlowScreenProps) {
   const { width } = useWindowDimensions();
   const exportRef = useRef<View>(null);
   const [activeTemplate, setActiveTemplate] = useState<ShareTemplateId>('poster');
+  const captions = useMemo(() => createCaptions(payload), [payload]);
   const [activeCaption, setActiveCaption] = useState(captions[0]);
   const [captionCopied, setCaptionCopied] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
@@ -58,7 +62,13 @@ export function VerdictShareFlowScreen() {
 
   const cardSize = getShareCardSize(activeTemplate);
 
-  const topEvidence = useMemo(() => sampleShareCard.evidence.slice(0, 4), []);
+  const topEvidence = useMemo(() => payload.evidence.slice(0, 4), [payload.evidence]);
+
+  useEffect(() => {
+    setActiveCaption(captions[0]);
+    setCaptionCopied(false);
+    setLastExport(null);
+  }, [captions, payload.caseNumber]);
 
   async function shareVerdict() {
     if (isSharing) {
@@ -105,39 +115,39 @@ export function VerdictShareFlowScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View pointerEvents="none" style={styles.exportHost}>
-        <ShareCardSurface ref={exportRef} payload={sampleShareCard} template={activeTemplate} />
+        <ShareCardSurface ref={exportRef} payload={payload} template={activeTemplate} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.topBar}>
           <BrandMark size="small" />
           <View style={styles.casePill}>
-            <Text style={styles.casePillText}>{sampleShareCard.caseNumber}</Text>
+            <Text style={styles.casePillText}>{payload.caseNumber}</Text>
           </View>
         </View>
 
         <View style={styles.heroPanel}>
           <View style={styles.verdictLabelRow}>
             <Text style={styles.kicker}>Verdict is in</Text>
-            <Text style={styles.dateText}>{sampleShareCard.createdAt}</Text>
+            <Text style={styles.dateText}>{payload.createdAt}</Text>
           </View>
 
           <View style={styles.verdictStamp}>
             <Text adjustsFontSizeToFit minimumFontScale={0.78} numberOfLines={1} style={styles.verdictTitle}>
-              {sampleShareCard.verdictTitle}
+              {payload.verdictTitle}
             </Text>
           </View>
 
           <View style={styles.scoreRow}>
             <View style={styles.scoreCard}>
               <Text style={styles.scoreLabel}>Aux Risk</Text>
-              <Text style={styles.scoreValue}>{sampleShareCard.auxRisk}</Text>
+              <Text style={styles.scoreValue}>{payload.auxRisk}</Text>
               <Text style={styles.scoreTotal}>/100</Text>
             </View>
             <View style={styles.chargeCard}>
               <Text style={styles.chargeLabel}>Charge</Text>
               <Text adjustsFontSizeToFit minimumFontScale={0.7} numberOfLines={4} style={styles.chargeText}>
-                {sampleShareCard.charge}
+                {payload.charge}
               </Text>
             </View>
           </View>
@@ -146,13 +156,13 @@ export function VerdictShareFlowScreen() {
             <View style={styles.rewardChip}>
               <Text style={styles.rewardLabel}>Badge</Text>
               <Text numberOfLines={2} style={styles.rewardValue}>
-                {sampleShareCard.badgeName ?? sampleShareCard.verdictTitle}
+                {payload.badgeName ?? payload.verdictTitle}
               </Text>
             </View>
             <View style={styles.rewardChip}>
               <Text style={styles.rewardLabel}>Persona</Text>
               <Text numberOfLines={2} style={styles.rewardValue}>
-                {sampleShareCard.courtPersona}
+                {payload.courtPersona}
               </Text>
             </View>
           </View>
@@ -172,9 +182,15 @@ export function VerdictShareFlowScreen() {
             <Text style={styles.shareButtonText}>{isSharing ? 'Preparing Verdict' : 'Share Verdict'}</Text>
           </Pressable>
           <Text style={styles.shareMeta}>
-            {lastExport ? `Last export: ${lastExport}` : `${cardSize.width} x ${cardSize.height} export ready`}
+            {lastExport ? `Last export: ${lastExport}` : `${sourceLabel} - ${cardSize.width} x ${cardSize.height} export ready`}
           </Text>
         </View>
+
+        {onNewTrial ? (
+          <Pressable accessibilityRole="button" onPress={onNewTrial} style={styles.newTrialButton}>
+            <Text style={styles.newTrialText}>Run Another Trial</Text>
+          </Pressable>
+        ) : null}
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Evidence</Text>
@@ -226,7 +242,7 @@ export function VerdictShareFlowScreen() {
           </View>
 
           <ScaledCardPreview width={cardSize.width} height={cardSize.height} maxWidth={width - spacing.lg * 2}>
-            <ShareCardSurface payload={sampleShareCard} template={activeTemplate} />
+            <ShareCardSurface payload={payload} template={activeTemplate} />
           </ScaledCardPreview>
         </View>
 
@@ -264,6 +280,15 @@ export function VerdictShareFlowScreen() {
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+function createCaptions(payload: ShareCardPayload) {
+  return [
+    `The court reviewed my music history and found ${payload.verdictTitle.toLowerCase()} behavior.`,
+    `${payload.charge}. Sentence: post the evidence.`,
+    `Aux Risk ${payload.auxRisk}/100. I will be taking no questions.`,
+    payload.challengePrompt ?? 'Who gave me the aux?',
+  ];
 }
 
 const styles = StyleSheet.create({
@@ -452,6 +477,23 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     marginTop: 10,
     textAlign: 'center',
+  },
+  newTrialButton: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderColor: colors.ink,
+    borderRadius: 999,
+    borderWidth: 1,
+    marginTop: spacing.sm,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+  },
+  newTrialText: {
+    color: colors.ink,
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
   },
   sectionHeader: {
     paddingHorizontal: spacing.lg,

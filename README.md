@@ -1,10 +1,18 @@
-# SongCourt Backend
+# SongCourt
 
-This repository has been stripped back to the backend only.
+SongCourt is an Expo/React Native iPhone app plus a Vercel-style Spotify backend.
 
-The remaining code is a Vercel-style Node API that owns Spotify OAuth, creates SongCourt session tokens, and returns normalized Spotify listening snapshots.
+The frontend is being rebuilt from a clean design system. The current app slice includes:
 
-## What Remains
+- clean trial home with Spotify connect/demo paths,
+- loading scanner flow,
+- verdict/share result flow,
+- fixed-size social card rendering,
+- native PNG share export for `Verdict Poster` and `Court Receipt`.
+
+The backend owns Spotify OAuth, creates SongCourt session tokens, and returns normalized Spotify listening snapshots.
+
+## Backend Routes
 
 - `api/auth/spotify/start.js`
 - `api/auth/spotify/callback.js`
@@ -13,10 +21,6 @@ The remaining code is a Vercel-style Node API that owns Spotify OAuth, creates S
 - `api/spotify/snapshot.js`
 - `api/me.js`
 - `api/_lib/songcourt.js`
-
-## What Was Removed
-
-All Expo/React Native frontend code, screens, stores, UI components, design assets, generated image prompts, EAS config, and mobile app config were removed.
 
 ## Environment
 
@@ -48,13 +52,13 @@ See [docs/spotify-production-setup.md](docs/spotify-production-setup.md).
 
 ## Frontend Rebuild
 
-The frontend was intentionally removed and is now being rebuilt from a clean design source of truth.
+The old frontend was intentionally removed and the current frontend is being rebuilt from a clean design source of truth.
 
 Start with [docs/ui-design-direction.md](docs/ui-design-direction.md) before scaffolding any new app UI.
 
 Share-card production layout rules live in [docs/share-card-layout-system.md](docs/share-card-layout-system.md).
 
-Current frontend status: a clean Expo/React Native design-lab shell exists with fixed-size `Verdict Poster` and `Court Receipt` share-card render surfaces.
+Current frontend status: a trial home -> loading scanner -> verdict/share flow exists. Demo trials work locally. Spotify login hooks are in place and real Spotify trials use `/spotify/snapshot` when a SongCourt session token is available.
 
 Run the app in the existing simulator:
 
