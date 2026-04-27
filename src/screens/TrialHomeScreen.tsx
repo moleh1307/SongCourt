@@ -2,7 +2,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BrandMark } from '../components/BrandMark';
-import { colors, spacing } from '../design/tokens';
+import { colors, fonts, spacing } from '../design/tokens';
 import { SongCourtUser } from '../types/songcourt';
 
 type TrialHomeScreenProps = {
@@ -30,15 +30,15 @@ export function TrialHomeScreen({
         <View style={styles.topBar}>
           <BrandMark size="small" />
           <View style={styles.livePill}>
-            <Text style={styles.livePillText}>Daily Trial</Text>
+            <Text style={styles.livePillText}>Case ready</Text>
           </View>
         </View>
 
         <View style={styles.hero}>
-          <Text style={styles.kicker}>Music on trial</Text>
-          <Text style={styles.title}>Turn your Spotify history into evidence.</Text>
+          <Text style={styles.kicker}>Daily trial</Text>
+          <Text style={styles.title}>A verdict your friends will actually open.</Text>
           <Text style={styles.copy}>
-            SongCourt scans replay behavior, artist loyalty, mood swings, genre jumps, and late-night listens.
+            SongCourt turns your listening snapshot into one clean result, one punchline, and one share card.
           </Text>
         </View>
 
@@ -54,6 +54,12 @@ export function TrialHomeScreen({
           </View>
 
           {authMessage ? <Text style={styles.authMessage}>{authMessage}</Text> : null}
+
+          <View style={styles.signalList}>
+            <SignalRow label="Spotify snapshot" value={user ? 'Connected' : 'Not connected'} />
+            <SignalRow label="Trial mode" value={canRunSpotifyTrial ? 'Real data' : 'Demo ready'} />
+            <SignalRow label="Share card" value="Story export" />
+          </View>
 
           <View style={styles.buttonStack}>
             {canRunSpotifyTrial ? (
@@ -81,14 +87,13 @@ export function TrialHomeScreen({
 
         <View style={styles.todayPanel}>
           <View style={styles.dial}>
-            <Text style={styles.dialLabel}>Today</Text>
             <Text style={styles.dialValue}>01</Text>
-            <Text style={styles.dialMeta}>case ready</Text>
           </View>
           <View style={styles.todayCopy}>
-            <Text style={styles.todayTitle}>Your daily verdict is waiting.</Text>
+            <Text style={styles.todayLabel}>Today</Text>
+            <Text style={styles.todayTitle}>One scan. One verdict.</Text>
             <Text style={styles.todayText}>
-              One scan. One verdict. One share card built for Stories and group chats.
+              Start with the case, then make the card worth sending.
             </Text>
           </View>
         </View>
@@ -100,6 +105,15 @@ export function TrialHomeScreen({
         </View>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function SignalRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.signalRow}>
+      <Text style={styles.signalLabel}>{label}</Text>
+      <Text style={styles.signalValue}>{value}</Text>
+    </View>
   );
 }
 
@@ -118,62 +132,66 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingBottom: 56,
+    paddingBottom: 44,
   },
   topBar: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
     paddingTop: spacing.xl,
   },
   livePill: {
     backgroundColor: colors.ink,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 9,
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
   livePillText: {
     color: colors.warmIvory,
-    fontSize: 11,
-    fontWeight: '900',
-    letterSpacing: 1.2,
-    textTransform: 'uppercase',
+    fontFamily: fonts.body,
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 0,
   },
   hero: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
   },
   kicker: {
     color: colors.courtRed,
-    fontSize: 13,
-    fontWeight: '900',
-    letterSpacing: 1.8,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0,
     marginBottom: spacing.sm,
-    textTransform: 'uppercase',
   },
   title: {
     color: colors.ink,
-    fontSize: 42,
-    fontWeight: '900',
+    fontFamily: fonts.display,
+    fontSize: 28,
+    fontWeight: '800',
     letterSpacing: 0,
-    lineHeight: 46,
+    lineHeight: 33,
+    maxWidth: 330,
   },
   copy: {
     color: colors.mutedInk,
-    fontSize: 16,
-    fontWeight: '700',
-    lineHeight: 23,
-    marginTop: spacing.sm,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 20,
+    marginTop: 10,
+    maxWidth: 330,
   },
   connectPanel: {
     backgroundColor: colors.receiptWhite,
-    borderColor: '#D8CCB8',
-    borderRadius: 24,
+    borderColor: colors.hairline,
+    borderRadius: 8,
     borderWidth: 1,
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.xl,
-    padding: spacing.md,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.lg,
+    padding: 18,
   },
   panelHeader: {
     alignItems: 'flex-start',
@@ -183,146 +201,173 @@ const styles = StyleSheet.create({
   },
   panelTitle: {
     color: colors.ink,
-    fontSize: 22,
-    fontWeight: '900',
+    fontFamily: fonts.body,
+    fontSize: 19,
+    fontWeight: '800',
   },
   panelSubtitle: {
     color: colors.mutedInk,
-    fontSize: 13,
-    fontWeight: '700',
-    lineHeight: 18,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    fontWeight: '600',
+    lineHeight: 17,
     marginTop: 5,
-    maxWidth: 258,
+    maxWidth: 260,
   },
   statusDot: {
     backgroundColor: colors.paperTan,
-    borderRadius: 9,
-    height: 18,
+    borderRadius: 6,
+    height: 12,
     marginTop: 6,
-    width: 18,
+    width: 12,
   },
   statusDotConnected: {
-    backgroundColor: colors.lime,
+    backgroundColor: '#38C768',
   },
   authMessage: {
     color: colors.courtRed,
-    fontSize: 12,
-    fontWeight: '800',
+    fontFamily: fonts.body,
+    fontSize: 11,
+    fontWeight: '700',
     lineHeight: 17,
     marginTop: spacing.sm,
   },
+  signalList: {
+    borderColor: '#E0D5C3',
+    borderTopWidth: 1,
+    gap: 10,
+    marginTop: spacing.sm,
+    paddingTop: spacing.sm,
+  },
+  signalRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  signalLabel: {
+    color: colors.mutedInk,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  signalValue: {
+    color: colors.ink,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    fontWeight: '800',
+  },
   buttonStack: {
-    gap: spacing.sm,
-    marginTop: spacing.md,
+    gap: 10,
+    marginTop: spacing.sm,
   },
   primaryButton: {
     alignItems: 'center',
     backgroundColor: colors.courtRed,
-    borderRadius: 18,
-    paddingVertical: 17,
+    borderRadius: 8,
+    paddingVertical: 15,
   },
   buttonDisabled: {
     opacity: 0.64,
   },
   primaryButtonText: {
     color: colors.receiptWhite,
-    fontSize: 15,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
+    fontFamily: fonts.body,
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0,
   },
   secondaryButton: {
     alignItems: 'center',
     borderColor: colors.ink,
-    borderRadius: 18,
+    borderRadius: 8,
     borderWidth: 1,
-    paddingVertical: 15,
+    paddingVertical: 13,
   },
   secondaryButtonText: {
     color: colors.ink,
-    fontSize: 14,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
+    fontFamily: fonts.body,
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0,
   },
   todayPanel: {
     alignItems: 'center',
     backgroundColor: colors.ink,
-    borderRadius: 24,
+    borderRadius: 8,
     flexDirection: 'row',
-    gap: spacing.md,
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.lg,
-    padding: spacing.md,
+    gap: spacing.sm,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.sm,
+    padding: 18,
   },
   dial: {
     alignItems: 'center',
-    backgroundColor: colors.lime,
-    borderRadius: 60,
-    height: 120,
+    borderColor: colors.courtRed,
+    borderRadius: 38,
+    borderWidth: 2,
+    height: 76,
     justifyContent: 'center',
-    width: 120,
-  },
-  dialLabel: {
-    color: colors.ink,
-    fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 1,
-    textTransform: 'uppercase',
+    width: 76,
   },
   dialValue: {
-    color: colors.ink,
-    fontSize: 40,
+    color: colors.warmIvory,
+    fontFamily: fonts.mono,
+    fontSize: 28,
     fontWeight: '900',
-    lineHeight: 44,
-  },
-  dialMeta: {
-    color: colors.ink,
-    fontSize: 10,
-    fontWeight: '900',
-    textTransform: 'uppercase',
+    lineHeight: 32,
   },
   todayCopy: {
     flex: 1,
   },
+  todayLabel: {
+    color: colors.paperTan,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    fontWeight: '700',
+  },
   todayTitle: {
     color: colors.warmIvory,
-    fontSize: 21,
-    fontWeight: '900',
-    lineHeight: 25,
+    fontFamily: fonts.body,
+    fontSize: 18,
+    fontWeight: '800',
+    lineHeight: 23,
+    marginTop: 2,
   },
   todayText: {
     color: colors.paperTan,
+    fontFamily: fonts.body,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 18,
-    marginTop: 8,
+    marginTop: 5,
   },
   statRow: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
+    gap: 10,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
   },
   miniStat: {
     backgroundColor: colors.receiptWhite,
-    borderColor: '#D8CCB8',
-    borderRadius: 18,
+    borderColor: colors.hairline,
+    borderRadius: 8,
     borderWidth: 1,
     flex: 1,
-    padding: spacing.sm,
+    minHeight: 76,
+    padding: 12,
   },
   miniStatLabel: {
     color: colors.mutedInk,
+    fontFamily: fonts.body,
     fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 1,
-    textTransform: 'uppercase',
+    fontWeight: '700',
+    letterSpacing: 0,
   },
   miniStatValue: {
     color: colors.ink,
-    fontSize: 18,
-    fontWeight: '900',
+    fontFamily: fonts.body,
+    fontSize: 17,
+    fontWeight: '800',
     marginTop: 6,
   },
 });

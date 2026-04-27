@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BrandMark } from '../BrandMark';
-import { cardSizes, colors } from '../../design/tokens';
+import { cardSizes, colors, fonts } from '../../design/tokens';
 import { ShareCardPayload, ShareEvidenceItem } from './types';
 
 type VerdictPosterCardProps = {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   paperNoise: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: colors.paperTan,
-    opacity: 0.08,
+    opacity: 0.05,
   },
   border: {
     position: 'absolute',
@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
   },
   caseNumber: {
     color: colors.ink,
+    fontFamily: fonts.mono,
     fontSize: 34,
     fontWeight: '800',
     letterSpacing: 8,
@@ -157,9 +158,10 @@ const styles = StyleSheet.create({
     top: 250,
     width: 936,
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 46,
     fontWeight: '900',
-    letterSpacing: 34,
+    letterSpacing: 18,
     textAlign: 'center',
   },
   verdictStamp: {
@@ -170,14 +172,15 @@ const styles = StyleSheet.create({
     height: 390,
     alignItems: 'center',
     borderColor: colors.courtRed,
-    borderRadius: 34,
-    borderWidth: 16,
+    borderRadius: 20,
+    borderWidth: 12,
     justifyContent: 'center',
     paddingHorizontal: 34,
     transform: [{ rotate: '-3deg' }],
   },
   verdictTitle: {
     color: colors.courtRed,
+    fontFamily: fonts.display,
     fontSize: 178,
     fontWeight: '900',
     letterSpacing: -4,
@@ -190,15 +193,18 @@ const styles = StyleSheet.create({
     top: 690,
     width: 330,
     minHeight: 128,
-    backgroundColor: colors.lime,
-    borderRadius: 22,
+    backgroundColor: colors.paleRed,
+    borderColor: colors.courtRed,
+    borderRadius: 16,
+    borderWidth: 3,
     justifyContent: 'center',
     paddingHorizontal: 26,
     transform: [{ rotate: '-2deg' }],
   },
   accentBadgeText: {
-    color: colors.ink,
-    fontSize: 44,
+    color: colors.courtRedDark,
+    fontFamily: fonts.body,
+    fontSize: 38,
     fontWeight: '900',
     lineHeight: 46,
     textTransform: 'uppercase',
@@ -213,6 +219,7 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 31,
     fontWeight: '900',
     letterSpacing: 10,
@@ -248,6 +255,7 @@ const styles = StyleSheet.create({
   },
   score: {
     color: colors.courtRed,
+    fontFamily: fonts.mono,
     fontSize: 256,
     fontWeight: '900',
     letterSpacing: -8,
@@ -257,6 +265,7 @@ const styles = StyleSheet.create({
     bottom: 26,
     color: colors.warmIvory,
     backgroundColor: colors.ink,
+    fontFamily: fonts.mono,
     fontSize: 30,
     fontWeight: '900',
     letterSpacing: 4,
@@ -279,6 +288,7 @@ const styles = StyleSheet.create({
   },
   chargeText: {
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 58,
     fontWeight: '900',
     lineHeight: 68,
@@ -313,24 +323,28 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   evidenceIconText: {
-    color: colors.lime,
+    color: colors.warmIvory,
+    fontFamily: fonts.body,
     fontSize: 28,
     fontWeight: '900',
   },
   evidenceLabel: {
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 24,
     fontWeight: '900',
     textTransform: 'uppercase',
   },
   evidenceValue: {
     color: colors.courtRed,
+    fontFamily: fonts.mono,
     fontSize: 52,
     fontWeight: '900',
     lineHeight: 58,
   },
   evidenceCaption: {
     color: colors.mutedInk,
+    fontFamily: fonts.body,
     fontSize: 22,
     fontWeight: '800',
     textTransform: 'uppercase',
@@ -347,9 +361,10 @@ const styles = StyleSheet.create({
   },
   footerMark: {
     color: colors.ink,
+    fontFamily: fonts.mono,
     fontSize: 24,
     fontWeight: '900',
-    letterSpacing: 7,
+    letterSpacing: 3,
   },
   footerSeal: {
     width: 118,
@@ -363,6 +378,7 @@ const styles = StyleSheet.create({
   },
   footerSealText: {
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 13,
     fontWeight: '900',
     letterSpacing: 2,

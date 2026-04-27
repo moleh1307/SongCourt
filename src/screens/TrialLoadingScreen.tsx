@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BrandMark } from '../components/BrandMark';
-import { colors, spacing } from '../design/tokens';
+import { colors, fonts, spacing } from '../design/tokens';
 
 type TrialLoadingScreenProps = {
   source: 'demo' | 'spotify';
@@ -38,7 +38,8 @@ export function TrialLoadingScreen({ source }: TrialLoadingScreenProps) {
 
         <View style={styles.scanner}>
           <View style={styles.record}>
-            <View style={styles.recordRing} />
+            <View style={styles.recordGrooveOuter} />
+            <View style={styles.recordGrooveInner} />
             <View style={styles.recordCore}>
               <Text style={styles.recordCoreText}>SC</Text>
             </View>
@@ -46,8 +47,8 @@ export function TrialLoadingScreen({ source }: TrialLoadingScreenProps) {
           <View style={[styles.scannerArc, { transform: [{ rotate: `${tick * 22}deg` }] }]} />
         </View>
 
-        <Text style={styles.title}>Building your case...</Text>
-        <Text style={styles.subtitle}>The court is turning listening behavior into shareable evidence.</Text>
+        <Text style={styles.title}>Building the case</Text>
+        <Text style={styles.subtitle}>Listening signals are being organized into a verdict and share card.</Text>
 
         <View style={styles.progressTrack}>
           <View style={[styles.progressFill, { width: `${progress}%` }]} />
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
     paddingTop: spacing.xl,
   },
   topBar: {
@@ -87,115 +88,132 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   caseType: {
-    color: colors.lime,
+    color: colors.paperTan,
+    fontFamily: fonts.body,
     fontSize: 12,
-    fontWeight: '900',
-    letterSpacing: 1.2,
+    fontWeight: '800',
+    letterSpacing: 0,
     textTransform: 'uppercase',
   },
   scanner: {
     alignItems: 'center',
-    height: 320,
+    height: 250,
     justifyContent: 'center',
-    marginTop: spacing.xxl,
+    marginTop: spacing.xl,
   },
   record: {
     alignItems: 'center',
     backgroundColor: '#050505',
-    borderColor: colors.charcoal,
-    borderRadius: 132,
-    borderWidth: 2,
-    height: 264,
-    justifyContent: 'center',
-    width: 264,
-  },
-  recordRing: {
-    borderColor: colors.courtRed,
+    borderColor: '#3B3530',
     borderRadius: 96,
-    borderWidth: 18,
+    borderWidth: 2,
     height: 192,
+    justifyContent: 'center',
+    width: 192,
+  },
+  recordGrooveOuter: {
+    borderColor: '#2F2924',
+    borderRadius: 74,
+    borderWidth: 12,
+    height: 148,
     opacity: 0.72,
     position: 'absolute',
-    width: 192,
+    width: 148,
+  },
+  recordGrooveInner: {
+    borderColor: colors.courtRed,
+    borderRadius: 50,
+    borderWidth: 4,
+    height: 100,
+    opacity: 0.76,
+    position: 'absolute',
+    width: 100,
   },
   recordCore: {
     alignItems: 'center',
-    backgroundColor: colors.lime,
-    borderRadius: 42,
-    height: 84,
+    backgroundColor: colors.warmIvory,
+    borderRadius: 30,
+    height: 60,
     justifyContent: 'center',
-    width: 84,
+    width: 60,
   },
   recordCoreText: {
     color: colors.ink,
-    fontSize: 24,
+    fontFamily: fonts.body,
+    fontSize: 18,
     fontWeight: '900',
   },
   scannerArc: {
-    borderColor: colors.violet,
+    borderColor: colors.courtRed,
     borderLeftColor: 'transparent',
-    borderRadius: 152,
-    borderWidth: 5,
-    height: 304,
+    borderRadius: 110,
+    borderWidth: 3,
+    height: 220,
     position: 'absolute',
-    width: 304,
+    width: 220,
   },
   title: {
     color: colors.warmIvory,
-    fontSize: 38,
+    fontFamily: fonts.display,
+    fontSize: 30,
     fontWeight: '900',
     letterSpacing: 0,
-    lineHeight: 42,
+    lineHeight: 34,
   },
   subtitle: {
     color: colors.paperTan,
-    fontSize: 15,
-    fontWeight: '700',
-    lineHeight: 22,
-    marginTop: spacing.sm,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 20,
+    marginTop: 8,
   },
   progressTrack: {
     backgroundColor: colors.charcoal,
     borderRadius: 999,
-    height: 14,
-    marginTop: spacing.xl,
+    height: 10,
+    marginTop: spacing.lg,
     overflow: 'hidden',
   },
   progressFill: {
-    backgroundColor: colors.lime,
+    backgroundColor: colors.courtRed,
     borderRadius: 999,
-    height: 14,
+    height: 10,
   },
   steps: {
-    gap: spacing.sm,
-    marginTop: spacing.lg,
+    gap: 10,
+    marginTop: spacing.md,
   },
   stepRow: {
     alignItems: 'center',
     backgroundColor: '#191715',
     borderColor: colors.charcoal,
-    borderRadius: 16,
+    borderRadius: 8,
     borderWidth: 1,
     flexDirection: 'row',
-    gap: spacing.sm,
-    padding: spacing.sm,
+    gap: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 13,
   },
   stepRowSelected: {
-    borderColor: colors.courtRed,
+    backgroundColor: '#211D1A',
+    borderColor: '#5F413A',
   },
   stepIndex: {
     color: colors.mutedInk,
+    fontFamily: fonts.mono,
     fontSize: 12,
     fontWeight: '900',
   },
   stepIndexSelected: {
-    color: colors.lime,
+    color: colors.courtRed,
   },
   stepText: {
     color: colors.paperTan,
     flex: 1,
-    fontSize: 14,
-    fontWeight: '800',
+    fontFamily: fonts.body,
+    fontSize: 13,
+    fontWeight: '700',
   },
   stepTextSelected: {
     color: colors.warmIvory,

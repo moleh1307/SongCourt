@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BrandMark } from '../BrandMark';
-import { cardSizes, colors } from '../../design/tokens';
+import { cardSizes, colors, fonts } from '../../design/tokens';
 import { ShareCardPayload, ShareEvidenceItem } from './types';
 
 type CourtReceiptCardProps = {
@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
     width: 952,
     height: 1254,
     backgroundColor: colors.receiptWhite,
+    borderRadius: 18,
     paddingHorizontal: 48,
     paddingTop: 42,
     shadowColor: '#000',
@@ -169,6 +170,7 @@ const styles = StyleSheet.create({
   },
   metaText: {
     color: colors.ink,
+    fontFamily: fonts.mono,
     fontSize: 26,
     fontWeight: '900',
     letterSpacing: 6,
@@ -176,6 +178,7 @@ const styles = StyleSheet.create({
   },
   metaDate: {
     color: colors.mutedInk,
+    fontFamily: fonts.mono,
     fontSize: 24,
     fontWeight: '800',
     letterSpacing: 5,
@@ -203,6 +206,7 @@ const styles = StyleSheet.create({
   },
   iconBoxText: {
     color: colors.courtRed,
+    fontFamily: fonts.body,
     fontSize: 34,
     fontWeight: '900',
   },
@@ -213,12 +217,14 @@ const styles = StyleSheet.create({
   },
   redLabel: {
     color: colors.courtRed,
+    fontFamily: fonts.body,
     fontSize: 26,
     fontWeight: '900',
     letterSpacing: 6,
   },
   verdictTitle: {
     color: colors.ink,
+    fontFamily: fonts.display,
     fontSize: 54,
     fontWeight: '900',
     letterSpacing: -1,
@@ -239,6 +245,7 @@ const styles = StyleSheet.create({
   },
   stampText: {
     color: colors.courtRed,
+    fontFamily: fonts.body,
     fontSize: 18,
     fontWeight: '900',
     letterSpacing: 3,
@@ -257,6 +264,7 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 21,
     fontWeight: '900',
     letterSpacing: 5,
@@ -267,6 +275,7 @@ const styles = StyleSheet.create({
   },
   score: {
     color: colors.courtRed,
+    fontFamily: fonts.mono,
     fontSize: 132,
     fontWeight: '900',
     letterSpacing: -5,
@@ -274,6 +283,7 @@ const styles = StyleSheet.create({
   },
   scoreTotal: {
     color: colors.ink,
+    fontFamily: fonts.mono,
     fontSize: 38,
     fontWeight: '900',
     marginBottom: 20,
@@ -326,6 +336,7 @@ const styles = StyleSheet.create({
   },
   damageLabel: {
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 22,
     fontWeight: '900',
     letterSpacing: 5,
@@ -354,6 +365,7 @@ const styles = StyleSheet.create({
   },
   rowIconText: {
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 16,
     fontWeight: '900',
   },
@@ -362,16 +374,19 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 27,
     fontWeight: '800',
   },
   rowCaption: {
     color: colors.mutedInk,
+    fontFamily: fonts.body,
     fontSize: 20,
     fontWeight: '700',
   },
   rowValue: {
     color: colors.ink,
+    fontFamily: fonts.mono,
     fontSize: 42,
     fontWeight: '900',
     minWidth: 90,
@@ -388,13 +403,16 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     alignItems: 'center',
-    backgroundColor: colors.lime,
+    backgroundColor: colors.paleRed,
+    borderColor: colors.courtRed,
+    borderWidth: 3,
     borderRadius: 48,
     justifyContent: 'center',
     marginRight: 28,
   },
   badgeIconText: {
-    color: colors.ink,
+    color: colors.courtRed,
+    fontFamily: fonts.body,
     fontSize: 48,
     fontWeight: '900',
   },
@@ -403,6 +421,7 @@ const styles = StyleSheet.create({
   },
   badgeTitle: {
     color: colors.ink,
+    fontFamily: fonts.display,
     fontSize: 48,
     fontWeight: '900',
     lineHeight: 56,
@@ -410,6 +429,7 @@ const styles = StyleSheet.create({
   },
   badgeCaption: {
     color: colors.mutedInk,
+    fontFamily: fonts.body,
     fontSize: 20,
     fontWeight: '700',
   },
@@ -421,6 +441,7 @@ const styles = StyleSheet.create({
   },
   rank: {
     color: colors.ink,
+    fontFamily: fonts.display,
     fontSize: 54,
     fontWeight: '900',
     lineHeight: 62,
@@ -441,6 +462,7 @@ const styles = StyleSheet.create({
   },
   footerChipText: {
     color: colors.ink,
+    fontFamily: fonts.body,
     fontSize: 19,
     fontWeight: '900',
     letterSpacing: 4,
@@ -463,6 +485,7 @@ const styles = StyleSheet.create({
   },
   approvedText: {
     color: colors.courtRed,
+    fontFamily: fonts.body,
     fontSize: 18,
     fontWeight: '900',
     letterSpacing: 3,
@@ -470,6 +493,7 @@ const styles = StyleSheet.create({
   },
   bottomLine: {
     color: colors.ink,
+    fontFamily: fonts.mono,
     fontSize: 27,
     fontWeight: '900',
     letterSpacing: 8,

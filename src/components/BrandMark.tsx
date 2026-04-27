@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../design/tokens';
+import { colors, fonts } from '../design/tokens';
 
 type BrandMarkProps = {
   size?: 'small' | 'large';
@@ -13,11 +13,11 @@ export function BrandMark({ size = 'large', light = false }: BrandMarkProps) {
 
   return (
     <View>
-      <Text style={[styles.wordmark, { color: ink, fontSize: isLarge ? 72 : 34 }]}>
+      <Text style={[styles.wordmark, { color: ink, fontSize: isLarge ? 70 : 21, lineHeight: isLarge ? 76 : 24 }]}>
         Song
         <Text style={[styles.court, { color: colors.courtRed }]}>Court</Text>
       </Text>
-      <Text style={[styles.tagline, { color: light ? colors.paperTan : colors.mutedInk, fontSize: isLarge ? 18 : 10 }]}>
+      <Text style={[styles.tagline, { color: light ? colors.paperTan : colors.mutedInk, fontSize: isLarge ? 14 : 7 }]}>
         MUSIC ON TRIAL
       </Text>
     </View>
@@ -26,16 +26,18 @@ export function BrandMark({ size = 'large', light = false }: BrandMarkProps) {
 
 const styles = StyleSheet.create({
   wordmark: {
-    fontWeight: '900',
-    letterSpacing: -1,
+    fontFamily: fonts.display,
+    fontWeight: '800',
+    letterSpacing: 0,
   },
   court: {
     fontStyle: 'italic',
-    fontWeight: '900',
+    fontWeight: '800',
   },
   tagline: {
-    fontWeight: '800',
-    letterSpacing: 8,
+    fontFamily: fonts.body,
+    fontWeight: '700',
+    letterSpacing: 0,
     marginTop: -2,
   },
 });
