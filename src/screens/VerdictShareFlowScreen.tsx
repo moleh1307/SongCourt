@@ -51,12 +51,16 @@ const templateOptions: Array<{
 ];
 
 type VerdictShareFlowScreenProps = {
+  archiveCount?: number;
+  onOpenArchive?: () => void;
   onNewTrial?: () => void;
   payload: ShareCardPayload;
   sourceLabel?: string;
 };
 
 export function VerdictShareFlowScreen({
+  archiveCount = 0,
+  onOpenArchive,
   onNewTrial,
   payload,
   sourceLabel = 'Daily Trial',
@@ -196,10 +200,21 @@ export function VerdictShareFlowScreen({
           </Text>
         </View>
 
-        {onNewTrial ? (
-          <Pressable accessibilityRole="button" onPress={onNewTrial} style={styles.newTrialButton}>
-            <Text style={styles.newTrialText}>Run Another Trial</Text>
-          </Pressable>
+        {onNewTrial || onOpenArchive ? (
+          <View style={styles.secondaryActions}>
+            {onNewTrial ? (
+              <Pressable accessibilityRole="button" onPress={onNewTrial} style={styles.newTrialButton}>
+                <Text style={styles.newTrialText}>Run Another Trial</Text>
+              </Pressable>
+            ) : null}
+            {onOpenArchive ? (
+              <Pressable accessibilityRole="button" onPress={onOpenArchive} style={styles.archiveButton}>
+                <Text style={styles.archiveButtonText}>
+                  {archiveCount > 0 ? `Archive (${archiveCount})` : 'Archive'}
+                </Text>
+              </Pressable>
+            ) : null}
+          </View>
         ) : null}
 
         <View style={styles.sectionHeader}>
@@ -497,18 +512,38 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
   },
-  newTrialButton: {
+  secondaryActions: {
     alignItems: 'center',
     alignSelf: 'center',
-    borderColor: colors.ink,
-    borderRadius: 8,
-    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'center',
     marginTop: spacing.sm,
+  },
+  newTrialButton: {
+    alignItems: 'center',
+    borderRadius: 8,
+    borderColor: colors.ink,
+    borderWidth: 1,
     paddingHorizontal: 18,
     paddingVertical: 10,
   },
   newTrialText: {
     color: colors.ink,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0,
+  },
+  archiveButton: {
+    alignItems: 'center',
+    backgroundColor: colors.ink,
+    borderRadius: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 11,
+  },
+  archiveButtonText: {
+    color: colors.warmIvory,
     fontFamily: fonts.body,
     fontSize: 12,
     fontWeight: '800',

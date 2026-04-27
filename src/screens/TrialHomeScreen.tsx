@@ -3,13 +3,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BrandMark } from '../components/BrandMark';
 import { colors, fonts, spacing } from '../design/tokens';
+import { VerdictHistoryRecord } from '../services/verdictHistoryStore';
 import { SongCourtUser } from '../types/songcourt';
 
 type TrialHomeScreenProps = {
   authMessage?: string;
   canRunSpotifyTrial: boolean;
+  historyCount: number;
   isConnecting: boolean;
+  lastVerdict?: VerdictHistoryRecord;
   onConnectSpotify: () => void;
+  onOpenArchive: () => void;
   onRunDemoTrial: () => void;
   onRunSpotifyTrial: () => void;
   user?: SongCourtUser | null;
@@ -18,19 +22,31 @@ type TrialHomeScreenProps = {
 export function TrialHomeScreen({
   authMessage,
   canRunSpotifyTrial,
+  historyCount,
   isConnecting,
+  lastVerdict,
   onConnectSpotify,
+  onOpenArchive,
   onRunDemoTrial,
   onRunSpotifyTrial,
   user,
 }: TrialHomeScreenProps) {
+  const caseDial = historyCount > 0 ? String(historyCount).padStart(2, '0') : '01';
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.topBar}>
           <BrandMark size="small" />
-          <View style={styles.livePill}>
-            <Text style={styles.livePillText}>Case ready</Text>
+          <View style={styles.topActions}>
+            <Pressable accessibilityRole="button" onPress={onOpenArchive} style={styles.archivePill}>
+              <Text style={styles.archivePillText}>
+                {historyCount > 0 ? `${historyCount} saved` : 'Archive'}
+              </Text>
+            </Pressable>
+            <View style={styles.livePill}>
+              <Text style={styles.livePillText}>Case ready</Text>
+            </View>
           </View>
         </View>
 
@@ -59,6 +75,7 @@ export function TrialHomeScreen({
             <SignalRow label="Spotify snapshot" value={user ? 'Connected' : 'Not connected'} />
             <SignalRow label="Trial mode" value={canRunSpotifyTrial ? 'Real data' : 'Demo ready'} />
             <SignalRow label="Share card" value="Story export" />
+            <SignalRow label="Case archive" value={historyCount > 0 ? `${historyCount} saved` : 'Empty'} />
           </View>
 
           <View style={styles.buttonStack}>
@@ -82,18 +99,26 @@ export function TrialHomeScreen({
             <Pressable accessibilityRole="button" onPress={onRunDemoTrial} style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>Try Demo Case</Text>
             </Pressable>
+
+            <Pressable accessibilityRole="button" onPress={onOpenArchive} style={styles.tertiaryButton}>
+              <Text style={styles.tertiaryButtonText}>Open Case Archive</Text>
+            </Pressable>
           </View>
         </View>
 
         <View style={styles.todayPanel}>
           <View style={styles.dial}>
-            <Text style={styles.dialValue}>01</Text>
+            <Text style={styles.dialValue}>{caseDial}</Text>
           </View>
           <View style={styles.todayCopy}>
-            <Text style={styles.todayLabel}>Today</Text>
-            <Text style={styles.todayTitle}>One scan. One verdict.</Text>
+            <Text style={styles.todayLabel}>{lastVerdict ? 'Latest case' : 'Today'}</Text>
+            <Text numberOfLines={2} style={styles.todayTitle}>
+              {lastVerdict ? lastVerdict.payload.verdictTitle : 'One scan. One verdict.'}
+            </Text>
             <Text style={styles.todayText}>
-              Start with the case, then make the card worth sending.
+              {lastVerdict
+                ? lastVerdict.payload.charge
+                : 'Start with the case, then make the card worth sending.'}
             </Text>
           </View>
         </View>
@@ -140,6 +165,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.md,
     paddingTop: spacing.xl,
+  },
+  topActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
+  },
+  archivePill: {
+    borderColor: colors.hairline,
+    borderRadius: 6,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  archivePillText: {
+    color: colors.ink,
+    fontFamily: fonts.body,
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 0,
   },
   livePill: {
     backgroundColor: colors.ink,
@@ -287,6 +331,17 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontFamily: fonts.body,
     fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0,
+  },
+  tertiaryButton: {
+    alignItems: 'center',
+    paddingVertical: 6,
+  },
+  tertiaryButtonText: {
+    color: colors.mutedInk,
+    fontFamily: fonts.body,
+    fontSize: 12,
     fontWeight: '800',
     letterSpacing: 0,
   },

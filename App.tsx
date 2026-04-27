@@ -7,21 +7,28 @@ import {
   createShareCardPayloadFromSnapshot,
 } from './src/domain/sharePayloadFactory';
 import { colors } from './src/design/tokens';
+import { CaseArchiveScreen } from './src/screens/CaseArchiveScreen';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { TrialHomeScreen } from './src/screens/TrialHomeScreen';
 import { TrialLoadingScreen } from './src/screens/TrialLoadingScreen';
 import { VerdictShareFlowScreen } from './src/screens/VerdictShareFlowScreen';
 import { hasCompletedOnboarding, markOnboardingComplete } from './src/services/onboardingStore';
+import { getStoredSession, saveStoredSession } from './src/services/sessionStore';
 import {
   createAuthState,
   createSessionFromTicket,
   fetchMusicSnapshot,
   openSpotifyLogin,
 } from './src/services/songcourtApi';
+import {
+  addVerdictToHistory,
+  getVerdictHistory,
+  type VerdictHistoryRecord,
+} from './src/services/verdictHistoryStore';
 import { type ShareCardPayload } from './src/components/share-cards/types';
 import { type SongCourtUser } from './src/types/songcourt';
 
-type AppScreen = 'boot' | 'onboarding' | 'trial' | 'loading' | 'verdict';
+type AppScreen = 'boot' | 'onboarding' | 'trial' | 'loading' | 'verdict' | 'archive';
 type TrialSource = 'demo' | 'spotify';
 
 export default function App() {
@@ -32,14 +39,22 @@ export default function App() {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [trialSource, setTrialSource] = useState<TrialSource>('demo');
   const [user, setUser] = useState<SongCourtUser | null>(null);
+  const [history, setHistory] = useState<VerdictHistoryRecord[]>([]);
   const [verdictPayload, setVerdictPayload] = useState<ShareCardPayload>(() => createDemoShareCardPayload());
+  const [verdictSourceLabel, setVerdictSourceLabel] = useState('Demo Trial');
 
   useEffect(() => {
     let isMounted = true;
 
-    hasCompletedOnboarding()
-      .then((isComplete) => {
+    Promise.all([hasCompletedOnboarding(), getStoredSession(), getVerdictHistory()])
+      .then(([isComplete, storedSession, storedHistory]) => {
         if (isMounted) {
+          if (storedSession) {
+            setSessionToken(storedSession.token);
+            setUser(storedSession.user);
+          }
+
+          setHistory(storedHistory);
           setActiveScreen(isComplete ? 'trial' : 'onboarding');
         }
       })
@@ -92,6 +107,7 @@ export default function App() {
       const session = await createSessionFromTicket(ticket);
       setSessionToken(session.token);
       setUser(session.user);
+      saveStoredSession(session.token, session.user).catch(() => undefined);
       setPendingAuthState(null);
       setIsConnecting(false);
       setAuthMessage('Spotify connected. Your real trial is ready.');
@@ -143,18 +159,32 @@ export default function App() {
 
     try {
       const startedAt = Date.now();
+      const sourceLabel = source === 'spotify' && sessionToken ? 'Spotify Trial' : 'Demo Trial';
       const payload =
         source === 'spotify' && sessionToken
           ? createShareCardPayloadFromSnapshot(await fetchMusicSnapshot(sessionToken), user)
           : createDemoShareCardPayload();
 
       await wait(Math.max(0, 2400 - (Date.now() - startedAt)));
+      const savedRecord = await addVerdictToHistory(payload, sourceLabel).catch(() => undefined);
+
+      if (savedRecord) {
+        setHistory((currentHistory) => [savedRecord, ...currentHistory].slice(0, 30));
+      }
+
+      setVerdictSourceLabel(sourceLabel);
       setVerdictPayload(payload);
       setActiveScreen('verdict');
     } catch (error) {
       setActiveScreen('trial');
       setAuthMessage(error instanceof Error ? error.message : 'Trial generation failed.');
     }
+  }
+
+  function openStoredVerdict(record: VerdictHistoryRecord) {
+    setVerdictPayload(record.payload);
+    setVerdictSourceLabel(record.sourceLabel);
+    setActiveScreen('verdict');
   }
 
   if (activeScreen === 'boot') {
@@ -174,6 +204,20 @@ export default function App() {
     );
   }
 
+  if (activeScreen === 'archive') {
+    return (
+      <>
+        <CaseArchiveScreen
+          onBack={() => setActiveScreen('trial')}
+          onOpenRecord={openStoredVerdict}
+          onRunTrial={() => setActiveScreen('trial')}
+          records={history}
+        />
+        <StatusBar style="dark" />
+      </>
+    );
+  }
+
   if (activeScreen === 'loading') {
     return (
       <>
@@ -187,9 +231,11 @@ export default function App() {
     return (
       <>
         <VerdictShareFlowScreen
+          archiveCount={history.length}
+          onOpenArchive={() => setActiveScreen('archive')}
           onNewTrial={() => setActiveScreen('trial')}
           payload={verdictPayload}
-          sourceLabel={trialSource === 'spotify' ? 'Spotify Trial' : 'Demo Trial'}
+          sourceLabel={verdictSourceLabel}
         />
         <StatusBar style="dark" />
       </>
@@ -201,8 +247,11 @@ export default function App() {
       <TrialHomeScreen
         authMessage={authMessage}
         canRunSpotifyTrial={Boolean(sessionToken)}
+        historyCount={history.length}
         isConnecting={isConnecting}
+        lastVerdict={history[0]}
         onConnectSpotify={connectSpotify}
+        onOpenArchive={() => setActiveScreen('archive')}
         onRunDemoTrial={() => void runTrial('demo')}
         onRunSpotifyTrial={() => void runTrial('spotify')}
         user={user}
