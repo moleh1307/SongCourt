@@ -38,6 +38,16 @@ const templateOptions: Array<{
     id: 'receipt',
     label: 'Receipt',
   },
+  {
+    detail: 'Data',
+    id: 'dna',
+    label: 'DNA',
+  },
+  {
+    detail: 'Tag',
+    id: 'challenge',
+    label: 'Friend',
+  },
 ];
 
 type VerdictShareFlowScreenProps = {
@@ -241,7 +251,7 @@ export function VerdictShareFlowScreen({
             </View>
           </View>
 
-          <ScaledCardPreview width={cardSize.width} height={cardSize.height} maxWidth={width - spacing.lg * 2}>
+          <ScaledCardPreview width={cardSize.width} height={cardSize.height} maxWidth={width - spacing.md * 2}>
             <ShareCardSurface payload={payload} template={activeTemplate} />
           </ScaledCardPreview>
         </View>
@@ -287,6 +297,7 @@ function createCaptions(payload: ShareCardPayload) {
     `The court reviewed my music history and found ${payload.verdictTitle.toLowerCase()} behavior.`,
     `${payload.charge}. Sentence: post the evidence.`,
     `Aux Risk ${payload.auxRisk}/100. I will be taking no questions.`,
+    `${payload.badgeName ?? payload.verdictTitle} unlocked. Who is brave enough to compare?`,
     payload.challengePrompt ?? 'Who gave me the aux?',
   ];
 }
@@ -508,9 +519,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg,
   },
   sectionHeaderCompact: {
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: spacing.sm,
     marginBottom: spacing.md,
   },
   sectionTitle: {
@@ -576,12 +585,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 6,
     padding: 5,
   },
   templateButton: {
+    alignItems: 'center',
     borderRadius: 6,
-    minWidth: 72,
+    flex: 1,
+    minWidth: 68,
     paddingHorizontal: 10,
     paddingVertical: 9,
   },
